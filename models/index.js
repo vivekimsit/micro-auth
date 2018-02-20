@@ -1,7 +1,7 @@
 'use strict';
 
-// const joi = require('joi');
-
+const db = require('./db');
 
 module.exports = {
+  db,
 };

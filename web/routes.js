@@ -6,8 +6,8 @@ const { catchAsyncErrors } = require('./utils');
 
 const router = new Router();
 
-router.get('/', catchAsyncErrors(async function (req, res) {
-  res.send("Hello World");
+router.get('/', catchAsyncErrors(async (req, res) => {
+  res.send('Hello World');
 }));
 
 module.exports = router;
