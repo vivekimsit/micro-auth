@@ -14,11 +14,11 @@ const schema = joi.object({
 const { error, value } = joi.validate(process.env, schema);
 
 if (error) {
-  throw new Error(`Config validation error: ${error.message}`)
+  throw new Error(`Config validation error: ${error.message}`);
 }
 
 const migrations = {
-  directory: path.join(__dirname, './migrations')
+  directory: path.join(__dirname, './migrations'),
 };
 
 module.exports = {
@@ -29,7 +29,7 @@ module.exports = {
     user: value.DB_USER || 'root',
     password: value.DB_PASSWORD || '',
     database: value.DB_NAME || 'root',
-    multipleStatements: true
+    multipleStatements: true,
   },
   migrations,
   pool: { min: 1, max: 10 },

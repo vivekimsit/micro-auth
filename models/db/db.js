@@ -4,12 +4,14 @@ const knex = require('knex');
 
 const config = require('./config');
 
+const connection = knex(config);
+
 async function init () {
-  await knex(config);
+  Promise.resolve(knex);
 }
 
 async function close () {
-  await knex.destroy;
+  await connection.destroy();
 }
 
 module.exports = {

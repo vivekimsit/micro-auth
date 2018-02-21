@@ -6,7 +6,11 @@ const { catchAsyncErrors } = require('./utils');
 
 const router = new Router();
 
-router.get('/', catchAsyncErrors(async (req, res) => {
+router.get('/account/login', catchAsyncErrors(async (req, res) => {
+  res.send('Hello World');
+}));
+
+router.get('/account/create', catchAsyncErrors(async (req, res) => {
   res.send('Hello World');
 }));
 

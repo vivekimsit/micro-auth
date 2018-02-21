@@ -12,6 +12,7 @@ process.on('SIGTERM', async () => {
 });
 
 process.on('SIGINT', async () => {
+  // eslint-disable-next-line no-console
   console.log('\n Caught interrupt signal \n');
   const exitCode = await stop(); // eslint-disable-line
   process.exit(exitCode);
@@ -23,13 +24,16 @@ const initServer = promisify(server.listen.bind(server));
 async function init () {
   try {
     await initDb();
-    console.log(`Connected to database`);
+    // eslint-disable-next-line no-console
+    console.log('Connected to database');
     await initServer(config.port);
   } catch (err) {
+    // eslint-disable-next-line no-console
     console.error(`Couldn't init thess app: ${err}`);
     // exit code for fatal exception
     process.exit(1);
   }
+  // eslint-disable-next-line no-console
   console.log(`App is listening on port ${config.port}`);
 }
 
@@ -41,14 +45,17 @@ async function stop () {
   try {
     await closeServer();
   } catch (err) {
+    // eslint-disable-next-line no-console
     console.log(`Failed to close the app: ${err.message}`);
     exitCode = 1;
   }
 
   try {
     await closeDb();
-    console.log(`Closed database connection`);
+    // eslint-disable-next-line no-console
+    console.log('Closed database connection');
   } catch (err) {
+    // eslint-disable-next-line no-console
     console.log(`Failed to close database: ${err.message}`);
     exitCode = 1;
   }
