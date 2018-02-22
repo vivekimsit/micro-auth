@@ -2,16 +2,11 @@
 
 const { Router } = require('express');
 
+const { login } = require('./login');
 const { catchAsyncErrors } = require('./utils');
 
 const router = new Router();
 
-router.get('/account/login', catchAsyncErrors(async (req, res) => {
-  res.send('Hello World');
-}));
-
-router.get('/account/create', catchAsyncErrors(async (req, res) => {
-  res.send('Hello World');
-}));
+router.post('/account/login', catchAsyncErrors(login));
 
 module.exports = router;

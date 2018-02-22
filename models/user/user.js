@@ -2,7 +2,7 @@
 
 const joi = require('joi');
 
-const db = require('../db');
+const { connection } = require('../db');
 
 const tableName = 'users';
 
@@ -15,12 +15,13 @@ const userSchema = joi.object({
 }).required();
 
 async function addUser (user) {
+  // eslint-disable-next-line no-param-reassign
   user = joi.attempt(user, userSchema);
-  return db(tableName).insert().returning('*');
+  return connection(tableName).insert(user).returning('*');
 }
 
 async function getUsers (params = {}) {
-  return db(tableName).where(params).select();
+  return connection(tableName).where(params).select();
 }
 
 module.exports = {
