@@ -8,7 +8,7 @@ const schema = joi.object({
   DB_PORT: joi.number().integer().required(),
   DB_USER: joi.string().required(),
   DB_NAME: joi.string().required(),
-  DB_PASSWORD: joi.string().required(),
+  DB_PASSWORD: joi.string().allow(''),
 }).unknown().required();
 
 const { error, value } = joi.validate(process.env, schema);
@@ -24,11 +24,11 @@ const migrations = {
 module.exports = {
   client: 'mysql',
   connection: {
-    host: value.DB_HOST || 'localhost',
-    port: value.DB_PORT || 3306,
-    user: value.DB_USER || 'root',
-    password: value.DB_PASSWORD || '',
-    database: value.DB_NAME || 'root',
+    host: value.DB_HOST,
+    port: value.DB_PORT,
+    user: value.DB_USER,
+    password: value.DB_PASSWORD,
+    database: value.DB_NAME,
     multipleStatements: true,
   },
   migrations,

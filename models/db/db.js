@@ -15,6 +15,7 @@ async function close () {
 }
 
 module.exports = {
+  connection,
   init,
   close,
 };

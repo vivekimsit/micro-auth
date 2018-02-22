@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "lint": "eslint .",
+    "migrate-db": "node ./scripts/migrate-db",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "vivekimsit@gmail.com",
