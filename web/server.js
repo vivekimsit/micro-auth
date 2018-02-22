@@ -4,7 +4,7 @@ const http = require('http');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const { logErrors } = require('./utils');
+const { errorHandler, logErrors } = require('./utils');
 
 const routes = require('./routes');
 
@@ -17,5 +17,6 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(routes);
 app.use(logErrors);
+app.use(errorHandler);
 
 module.exports = http.createServer(app);

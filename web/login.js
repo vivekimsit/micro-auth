@@ -28,4 +28,4 @@ async function authorize ({ username, password }) {
   return { isAuthorized, uid };
 }
 
-module.exports = { login: run };
+module.exports = run;
