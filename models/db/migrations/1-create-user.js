@@ -1,6 +1,6 @@
 'use strict';
 
-const tableName = 'auth_users';
+const { tableName } = require('../../user');
 
 function up (knex) {
   return knex.schema.createTable(tableName, (table) => {

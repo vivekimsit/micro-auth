@@ -24,6 +24,7 @@ async function getUsers (params = {}) {
 }
 
 module.exports = {
+  tableName,
   addUser,
   getUsers,
 };

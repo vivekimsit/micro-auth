@@ -21,6 +21,10 @@ const migrations = {
   directory: path.join(__dirname, './migrations'),
 };
 
+const seeds = {
+  directory: path.join(__dirname, './seeds/dev'),
+};
+
 module.exports = {
   client: 'mysql',
   connection: {
@@ -32,5 +36,6 @@ module.exports = {
     multipleStatements: true,
   },
   migrations,
+  seeds,
   pool: { min: 1, max: 10 },
 };
