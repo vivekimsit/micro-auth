@@ -10,6 +10,10 @@ const Boom = require('Boom');
  */
 const catchAsyncErrors = middleware => (req, res, next) => {
   Promise.resolve(middleware(req, res, next)).catch((err) => {
+    if (err.isJoi) {
+      const message = err.details.map((detail) => detail.message).join(', ');
+      return next(Boom.badRequest(message));
+    }
     if (!err.isBoom) {
       return next(Boom.badImplementation(err));
     }
@@ -18,12 +22,7 @@ const catchAsyncErrors = middleware => (req, res, next) => {
 }
 
 function errorHandler (err, req, res, next) {
-  if (err.isJoi) {
-    const message = err.details.map((detail) => detail.message).join(', ');
-    res.status(400).send(`Invalid format: ${message}`);
-  } else {
-    res.status(err.output.statusCode).json(err.output.payload);
-  }
+  res.status(err.output.statusCode).json(err.output.payload);
 }
 
 function logErrors(err, req, res, next) {

@@ -15,7 +15,7 @@ async function run (req, res, next) {
   const login = joi.attempt(req.body, accountSchema);
   const result = await isUsernameTaken(login);
   if (result) {
-    throw Boom.conflict('there was a conflict');
+    throw Boom.conflict('Username is already taken');
   }
   res.status(200).send(result);
 }
