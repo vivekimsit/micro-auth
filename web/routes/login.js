@@ -3,7 +3,7 @@
 const joi = require('joi');
 const bcrypt = require('bcrypt');
 
-const user = require('../models/user');
+const user = require('../../models/user');
 
 const loginSchema = joi.object({
   username: joi.string().required(),

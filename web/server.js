@@ -1,11 +1,11 @@
 'use strict';
 
-const http = require('http');
-const express = require('express');
-const cors = require('cors');
 const bodyParser = require('body-parser');
-const { errorHandler, logErrors } = require('./utils');
+const cors = require('cors');
+const express = require('express');
+const http = require('http');
 
+const { errorHandler, logErrors } = require('./utils');
 const routes = require('./routes');
 
 const app = express();

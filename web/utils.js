@@ -8,7 +8,7 @@ const Boom = require('Boom');
  * Otherwise those requests will "hang" and will not be eligible for
  * garbage collection.
  */
-const catchAsyncErrors = middleware => (req, res, next) => {
+const catchAsyncErrors = middleware => (req, res, next) =>
   Promise.resolve(middleware(req, res, next)).catch((err) => {
     if (err.isJoi) {
       const message = err.details.map((detail) => detail.message).join(', ');
@@ -19,7 +19,6 @@ const catchAsyncErrors = middleware => (req, res, next) => {
     }
     next(err);
   });
-}
 
 function errorHandler (err, req, res, next) {
   res.status(err.output.statusCode).json(err.output.payload);
