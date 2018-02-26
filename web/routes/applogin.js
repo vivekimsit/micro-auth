@@ -19,7 +19,7 @@ async function run (req, res, next) {
   const { appname, username, password } = joi.attempt(req.body, apploginSchema);
   const { exists, secret } = await getApp(appname);
   if (!exists) {
-    throw boom.badRequest(`Invalid app ${appname}.`);
+    throw boom.badRequest(`Invalid app name ${appname}.`);
   }
   const { isAuthorized, ...user } = await authorize({ username, password });
   if (!isAuthorized) {
