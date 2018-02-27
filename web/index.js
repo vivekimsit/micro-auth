@@ -2,8 +2,9 @@
 
 const { promisify } = require('es6-promisify');
 
-const server = require('./server');
 const config = require('./config');
+const logger = require('./logger');
+const server = require('./server');
 const { db } = require('../models');
 
 process.on('SIGTERM', async () => {
@@ -12,8 +13,7 @@ process.on('SIGTERM', async () => {
 });
 
 process.on('SIGINT', async () => {
-  // eslint-disable-next-line no-console
-  console.log('\n Caught interrupt signal \n');
+  logger.info('\n Caught interrupt signal \n');
   const exitCode = await stop(); // eslint-disable-line
   process.exit(exitCode);
 });
@@ -24,17 +24,14 @@ const initServer = promisify(server.listen.bind(server));
 async function init () {
   try {
     await initDb();
-    // eslint-disable-next-line no-console
-    console.log('Connected to database');
+    logger.info('Connected to database');
     await initServer(config.port);
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error(`Couldn't init thess app: ${err}`);
+    logger.error(`Couldn't init thess app: ${err}`);
     // exit code for fatal exception
     process.exit(1);
   }
-  // eslint-disable-next-line no-console
-  console.log(`App is listening on port ${config.port}`);
+  logger.info(`App is listening on port ${config.port}`);
 }
 
 const closeDb = db.close;
@@ -45,18 +42,15 @@ async function stop () {
   try {
     await closeServer();
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.log(`Failed to close the app: ${err.message}`);
+    logger.error(`Failed to close the app: ${err.message}`);
     exitCode = 1;
   }
 
   try {
     await closeDb();
-    // eslint-disable-next-line no-console
-    console.log('Closed database connection');
+    logger.info('Closed database connection');
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.log(`Failed to close database: ${err.message}`);
+    logger.error(`Failed to close database: ${err.message}`);
     exitCode = 1;
   }
   return exitCode;
