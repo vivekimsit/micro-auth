@@ -13,8 +13,17 @@ Authentication microservice
 ### seed data
 `$ npm run seed-db`
 
+### setup
+```
+$ npm install
+$ npm run migrate-db
+$ npm run seed-db
+$ npm run start:dev
+```
+
 ### TODO
 
-- [ ] Add jwt support
+- [x] Add jwt support
+- [x] Logging
+- [x] Register users per app
 - [ ] Add githooks
-- [ ] Register users per app
