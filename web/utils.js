@@ -1,6 +1,8 @@
 'use strict';
 
-const Boom = require('Boom');
+const boom = require('Boom');
+
+const logger = require('./logger');
 
 /**
  * Notice that when not calling "next" in an error-handling function,
@@ -12,10 +14,10 @@ const catchAsyncErrors = middleware => (req, res, next) =>
   Promise.resolve(middleware(req, res, next)).catch((err) => {
     if (err.isJoi) {
       const message = err.details.map((detail) => detail.message).join(', ');
-      return next(Boom.badRequest(message));
+      return next(boom.badRequest(message));
     }
     if (!err.isBoom) {
-      return next(Boom.badImplementation(err));
+      return next(boom.badImplementation(err));
     }
     next(err);
   });
@@ -25,7 +27,7 @@ function errorHandler (err, req, res, next) {
 }
 
 function logErrors(err, req, res, next) {
-  console.error(err.stack); // eslint-disable-line
+  logger.error(err.stack); // eslint-disable-line
   next(err);
 }
 
