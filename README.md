@@ -58,6 +58,24 @@ Body:
 }
 `
 
+Authenticate an user for an app name `demo`
+
+Method: `POST`
+
+Endpoint:
+
+`/account/applogin`
+
+Body:
+
+`
+{
+  username='demo',
+  password='demo',
+  appname='demo'
+}
+`
+
 ### authorization
 
 TODO
