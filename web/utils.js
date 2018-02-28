@@ -11,9 +11,9 @@ const logger = require('./logger');
  * garbage collection.
  */
 const catchAsyncErrors = middleware => (req, res, next) =>
-  Promise.resolve(middleware(req, res, next)).catch((err) => {
+  Promise.resolve(middleware(req, res, next)).catch(err => {
     if (err.isJoi) {
-      const message = err.details.map((detail) => detail.message).join(', ');
+      const message = err.details.map(detail => detail.message).join(', ');
       return next(boom.badRequest(message));
     }
     if (!err.isBoom) {
@@ -22,7 +22,7 @@ const catchAsyncErrors = middleware => (req, res, next) =>
     next(err);
   });
 
-function errorHandler (err, req, res, next) {
+function errorHandler(err, req, res, next) {
   res.status(err.output.statusCode).json(err.output.payload);
 }
 

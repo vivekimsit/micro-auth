@@ -11,8 +11,10 @@
     "sourceType": "script"
   },
   "rules": {
-    "space-before-function-paren": 0,
-    "arrow-parens": ["error", "always"],
+    "space-before-function-paren": "off",
+    "object-curly-newline": "off",
+    "comma-dangle": "off",
+    "no-use-before-define": "off",
     "max-len": ["error", 80],
     "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
     "no-unused-vars": ["error", { "argsIgnorePattern": "next" }]

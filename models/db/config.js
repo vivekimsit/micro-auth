@@ -3,13 +3,19 @@
 const path = require('path');
 const joi = require('joi');
 
-const schema = joi.object({
-  DB_HOST: joi.string().required(),
-  DB_PORT: joi.number().integer().required(),
-  DB_USER: joi.string().required(),
-  DB_NAME: joi.string().required(),
-  DB_PASSWORD: joi.string().allow(''),
-}).unknown().required();
+const schema = joi
+  .object({
+    DB_HOST: joi.string().required(),
+    DB_PORT: joi
+      .number()
+      .integer()
+      .required(),
+    DB_USER: joi.string().required(),
+    DB_NAME: joi.string().required(),
+    DB_PASSWORD: joi.string().allow(''),
+  })
+  .unknown()
+  .required();
 
 const { error, value } = joi.validate(process.env, schema);
 

@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "migrate-db": "node ./scripts/migrate-db",
     "seed-db": "node ./scripts/seed-db",
+    "prettier": "prettier --write \"{models,web}/**/*.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "vivekimsit@gmail.com",
@@ -25,6 +26,7 @@
     "knex": "^0.14.4",
     "moment": "^2.20.1",
     "mysql": "^2.15.0",
+    "prettier": "^1.11.0",
     "winston": "^3.0.0-rc1"
   },
   "devDependencies": {

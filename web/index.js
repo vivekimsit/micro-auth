@@ -21,7 +21,7 @@ process.on('SIGINT', async () => {
 // do not init the process if a crucial component can not start up
 const initDb = db.init;
 const initServer = promisify(server.listen.bind(server));
-async function init () {
+async function init() {
   try {
     await initDb();
     logger.info('Connected to database');
@@ -36,7 +36,7 @@ async function init () {
 
 const closeDb = db.close;
 const closeServer = promisify(server.close.bind(server));
-async function stop () {
+async function stop() {
   // start with a normal exit code
   let exitCode = 0;
   try {

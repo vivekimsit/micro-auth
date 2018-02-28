@@ -3,7 +3,7 @@
 const { tableName } = require('../../../app');
 
 // eslint-disable-next-line no-unused-vars
-exports.seed = function seed (knex, Promise) {
+exports.seed = function seed(knex, Promise) {
   return knex(tableName).insert([
     {
       name: 'demo',
