@@ -41,9 +41,11 @@ Error messages are logged in `error.log` file.
 
 ### authentication
 
-Authenticating an user
+- Authenticating an user
 
-Method: `POST`
+Method:
+
+`POST`
 
 Endpoint:
 
@@ -58,9 +60,20 @@ Body:
 }
 `
 
-Authenticate an user for an app name `demo`
+Reponse:
 
-Method: `POST`
+`
+{
+  isAuthorized: <boolean>,
+  uid: <number>
+}
+`
+
+- Authenticating an user against app named `demo`
+
+Method:
+
+`POST`
 
 Endpoint:
 
@@ -73,6 +86,15 @@ Body:
   username='demo',
   password='demo',
   appname='demo'
+}
+`
+
+Reponse:
+
+`
+{
+  expiration: <seconds>,
+  token: <jwt_token>
 }
 `
 
