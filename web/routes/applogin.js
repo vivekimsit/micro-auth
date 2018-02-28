@@ -1,8 +1,9 @@
 'use strict';
 
-const joi = require('joi');
 const bcrypt = require('bcrypt');
 const boom = require('Boom');
+const joi = require('joi');
+const moment = require('moment');
 // sign with default (HMAC SHA256)
 const jwt = require('jsonwebtoken');
 
@@ -59,9 +60,8 @@ const successResponse = ({ uid, username }, secret, res) => {
 };
 
 const getExpirationTime = () => {
-  const currentTime = new Date();
-  const timezoneOffsetInMilliSec = currentTime.getTimezoneOffset() * 60000;
-  return Math.floor((currentTime.getTime() - timezoneOffsetInMilliSec) / 1000);
+  // returns time in seconds
+  return moment().utc().add(1, 'hours').unix().toString();
 };
 
 module.exports = run;
