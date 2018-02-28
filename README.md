@@ -33,6 +33,35 @@ $ npm run seed-db
 $ npm run start:dev
 ```
 
+### logging
+
+All messages are logged in `combine.log` file.
+
+Error messages are logged in `error.log` file.
+
+### authentication
+
+Authenticating an user
+
+Method: `POST`
+
+Endpoint:
+
+`/account/login`
+
+Body:
+
+`
+{
+  username='demo',
+  password='demo'
+}
+`
+
+### authorization
+
+TODO
+
 ### TODO
 
 - [x] Add jwt support
