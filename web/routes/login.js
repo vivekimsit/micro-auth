@@ -24,8 +24,8 @@ async function authorize({ username, password }) {
   let isAuthorized = false;
   let uid = null;
   if (users.length === 1) {
-    isAuthorized = await bcrypt.compare(password, users[0].password);
     const [user] = users;
+    isAuthorized = await bcrypt.compare(password, user.password);
     ({ uid } = user);
   }
   return { isAuthorized, uid };

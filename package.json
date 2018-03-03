@@ -10,7 +10,8 @@
     "migrate-db": "node ./scripts/migrate-db",
     "seed-db": "node ./scripts/seed-db",
     "prettier": "prettier --write \"{models,web}/**/*.js\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test-unit": "mocha ./test/setup.js ./**/*.unit.spec.js",
+    "test-unit-dev": "mocha --watch ./test/setup.js ./**/*unit.spec.js"
   },
   "author": "vivekimsit@gmail.com",
   "license": "ISC",
@@ -36,6 +37,7 @@
     "eslint": "^4.18.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0",
+    "mocha": "^5.0.1",
     "nodemon": "^1.15.0",
     "sinon": "^4.3.0",
     "sinon-chai": "^2.14.0",
