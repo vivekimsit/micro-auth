@@ -26,7 +26,7 @@ async function run(req, res, next) {
   }
   const { isAuthorized, ...user } = await authorize({ username, password });
   if (!isAuthorized) {
-    throw boom.conflict('Invalid username or password.');
+    return next(boom.unauthorized('Invalid username or password.'));
   }
   successResponse(user, secret, res);
 }

@@ -1,7 +1,8 @@
 'use strict';
 
-const joi = require('joi');
 const bcrypt = require('bcrypt');
+const boom = require('Boom');
+const joi = require('joi');
 
 const userModel = require('../../models/user');
 
@@ -12,10 +13,14 @@ const loginSchema = joi
   })
   .required();
 
-async function run(req, res) {
+async function run(req, res, next) {
   const login = joi.attempt(req.body, loginSchema);
   const result = await authorize(login);
-  res.status(200).send(result);
+  if (!result.isAuthorized) {
+    return next(boom.unauthorized('Invalid username or password.'));
+  }
+  const { uid } = result;
+  res.status(200).send({ uid });
 }
 
 async function authorize({ username, password }) {
