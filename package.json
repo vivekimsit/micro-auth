@@ -11,7 +11,9 @@
     "seed-db": "node ./scripts/seed-db",
     "prettier": "prettier --write \"{models,web}/**/*.js\"",
     "test-unit": "mocha ./test/setup.js ./**/*.unit.spec.js",
-    "test-unit-dev": "mocha --watch ./test/setup.js ./**/*unit.spec.js"
+    "test-unit-dev": "mocha --watch ./test/setup.js ./**/*unit.spec.js",
+    "test-e2e": "mocha ./test/setup.js ./**/*.e2e.spec.js",
+    "test": "npm run test-unit && npm run test-e2e"
   },
   "author": "vivekimsit@gmail.com",
   "license": "ISC",

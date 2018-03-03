@@ -7,7 +7,7 @@ const request = require('super-request');
 const userModel = require('../../models/user');
 const server = require('../server');
 
-describe('GET', () => {
+describe('POST /account/login', () => {
   let sandbox;
 
   beforeEach(() => {
