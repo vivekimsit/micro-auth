@@ -15,11 +15,10 @@ const loginSchema = joi
 
 async function run(req, res, next) {
   const login = joi.attempt(req.body, loginSchema);
-  const result = await authorize(login);
-  if (!result.isAuthorized) {
-    return next(boom.unauthorized('Invalid username or password.'));
+  const { isAuthorized, uid } = await authorize(login);
+  if (!isAuthorized) {
+    throw boom.unauthorized('Invalid username or password.');
   }
-  const { uid } = result;
   res.status(200).send({ uid });
 }
 
