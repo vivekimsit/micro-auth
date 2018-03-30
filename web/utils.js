@@ -1,6 +1,6 @@
 'use strict';
 
-const boom = require('Boom');
+const boom = require('boom');
 
 const logger = require('./logger');
 

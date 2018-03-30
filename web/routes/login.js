@@ -1,7 +1,7 @@
 'use strict';
 
 const bcrypt = require('bcrypt');
-const boom = require('Boom');
+const boom = require('boom');
 const joi = require('joi');
 
 const userModel = require('../../models/user');

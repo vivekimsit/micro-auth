@@ -1,7 +1,7 @@
 'use strict';
 
 const joi = require('joi');
-const boom = require('Boom');
+const boom = require('boom');
 
 const user = require('../../models/user');
 
