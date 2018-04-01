@@ -60,7 +60,7 @@ const successResponse = ({ uid, username }, secret, res) => {
   const expiration = getExpirationTime();
   const payload = { uid, username, expiration };
   const token = jwt.sign(payload, secret);
-  res.status(200).send({ expiration, token });
+  res.status(200).send({ expiration, token, username });
 };
 
 const getExpirationTime = () =>

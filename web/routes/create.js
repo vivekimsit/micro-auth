@@ -1,9 +1,11 @@
 'use strict';
 
-const joi = require('joi');
+const bcrypt = require('bcrypt');
 const boom = require('boom');
+const joi = require('joi');
+const uuidv4 = require('uuid/v4');
 
-const user = require('../../models/user');
+const userModel = require('../../models/user');
 
 const accountSchema = joi
   .object({
@@ -13,17 +15,29 @@ const accountSchema = joi
   .required();
 
 async function run(req, res, next) {
-  const login = joi.attempt(req.body, accountSchema);
-  const result = await isUsernameTaken(login);
+  const account = joi.attempt(req.body, accountSchema);
+  console.log(account);
+  let result = await isUsernameTaken(account);
   if (result) {
     throw boom.conflict('Username is already taken.');
   }
+  result = await addAccount(account);
   res.status(200).send(result);
 }
 
 async function isUsernameTaken({ username }) {
-  const users = await user.getUsers({ username });
+  const users = await userModel.getUsers({ username });
   return users.length > 0;
+}
+
+async function addAccount(account) {
+  const salt = await bcrypt.genSalt(10);
+  const hash = await bcrypt.hash(account.password, salt);
+
+  account.uid = uuidv4();
+  account.salt = salt;
+  account.password = hash;
+  return await userModel.addUser(account);
 }
 
 module.exports = run;

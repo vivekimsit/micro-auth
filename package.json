@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "start:dev": "cross-env NODE_ENV=development nodemon index.js",
+    "start:dev": "cross-env NODE_ENV=development DB_HOST=host.docker.internal nodemon index.js",
     "lint": "eslint .",
     "migrate-db": "node ./scripts/migrate-db",
     "seed-db": "node ./scripts/seed-db",

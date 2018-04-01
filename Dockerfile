@@ -15,5 +15,5 @@ RUN cd /opt/micro-auth && npm install
 COPY . /opt/micro-auth
 
 WORKDIR /opt/micro-auth
-EXPOSE 3000
+EXPOSE 8000
 CMD ["npm", "run", "start:dev"]
