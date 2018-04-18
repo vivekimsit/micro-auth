@@ -15,7 +15,7 @@ const createSchema = joi
     username: joi.string().required(),
     fullname: joi.string(),
     password: joi.string().required(),
-    language: joi.string(),
+    language: joi.string().default('en-US'),
   })
   .required();
 
