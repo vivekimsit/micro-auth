@@ -6,17 +6,21 @@ const joi = require('joi');
 const uuidv4 = require('uuid/v4');
 
 const userModel = require('../../models/user');
+const logger = require('../logger');
 
-const accountSchema = joi
+const createSchema = joi
   .object({
+    email: joi.string().email().required(),
+    phone: joi.string(),
     username: joi.string().required(),
+    fullname: joi.string(),
     password: joi.string().required(),
+    language: joi.string(),
   })
   .required();
 
 async function run(req, res, next) {
-  const account = joi.attempt(req.body, accountSchema);
-  console.log(account);
+  const account = joi.attempt(req.body, createSchema);
   let result = await isUsernameTaken(account);
   if (result) {
     throw boom.conflict('Username is already taken.');

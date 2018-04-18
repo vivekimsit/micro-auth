@@ -12,7 +12,7 @@ const schema = joi
     NODE_ENV: joi
       .string()
       .allow(['development', 'production', 'test'])
-      .default('production'),
+      .default('development'),
     LOGGER_LEVEL: joi
       .string()
       .allow(['test', 'error', 'warn', 'info', 'verbose', 'debug', 'silly'])
@@ -26,7 +26,7 @@ const schema = joi
       })
       .when('NODE_ENV', {
         is: 'test',
-        then: joi.default('warn'),
+        then: joi.default('silly'),
       }),
   })
   .unknown() // ignore unknown fields

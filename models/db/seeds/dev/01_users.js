@@ -8,6 +8,7 @@ exports.seed = function seed(knex, Promise) {
     {
       uid: '1',
       username: 'demo',
+      email: 'demo@example.com',
       password: '$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG',
       salt: '$2a$10$IbfPoCGdLLHh1hyQ9b9URO',
       is_active: true,

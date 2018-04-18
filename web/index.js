@@ -31,7 +31,7 @@ async function init() {
     // exit code for fatal exception
     process.exit(1);
   }
-  logger.info(`App is listening on port ${config.port}`);
+  logger.info(`App is listening on port ${config.port} in ${config.env} mode`);
 }
 
 const closeDb = db.close;

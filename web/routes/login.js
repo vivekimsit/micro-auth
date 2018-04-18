@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const boom = require('boom');
 const joi = require('joi');
 
+const logger = require('../logger');
 const userModel = require('../../models/user');
 
 const loginSchema = joi

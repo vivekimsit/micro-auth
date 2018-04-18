@@ -9,9 +9,14 @@ const tableName = 'users';
 const userSchema = joi
   .object({
     uid: joi.string().required(),
-    username: joi.string().required(),
-    password: joi.string().required(),
     salt: joi.string().required(),
+    email: joi.string().required(),
+    phone: joi.string(),
+    device: joi.string(),
+    fullname: joi.string(),
+    language: joi.string().default('en-US'),
+    password: joi.string().required(),
+    username: joi.string().required(),
     is_active: joi.boolean().default(true),
   })
   .required();
