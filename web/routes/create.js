@@ -13,7 +13,8 @@ const createSchema = joi
     email: joi.string().email().required(),
     phone: joi.string(),
     username: joi.string().required(),
-    fullname: joi.string(),
+    firstname: joi.string().required(),
+    lastname: joi.string().required(),
     password: joi.string().required(),
     language: joi.string().default('en-US'),
   })
@@ -21,16 +22,16 @@ const createSchema = joi
 
 async function run(req, res, next) {
   const account = joi.attempt(req.body, createSchema);
-  let result = await isUsernameTaken(account);
+  let result = await isEmailTaken(account);
   if (result) {
-    throw boom.conflict('Username is already taken.');
+    throw boom.conflict('Email is already taken.');
   }
   result = await addAccount(account);
   res.status(200).send(result);
 }
 
-async function isUsernameTaken({ username }) {
-  const users = await userModel.getUsers({ username });
+async function isEmailTaken({ email }) {
+  const users = await userModel.getUsers({ email });
   return users.length > 0;
 }
 

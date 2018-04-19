@@ -5,10 +5,12 @@ const request = require('super-request');
 const server = require('../server');
 
 describe('POST /account/create', () => {
-  it('should not create user with existing username', async () => {
+  it('should not create user with existing email', async () => {
     const body = {
       email: 'foo@example.com',
       username: 'demo',
+      firstname: 'foo',
+      lastname: 'bar',
       password: 'demo',
     };
     const resp = await request(server)

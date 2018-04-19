@@ -9,31 +9,31 @@ const userModel = require('../../models/user');
 
 const loginSchema = joi
   .object({
-    username: joi.string().required(),
+    email: joi.string().email().required(),
     password: joi.string().required(),
   })
   .required();
 
 async function run(req, res, next) {
   const login = joi.attempt(req.body, loginSchema);
-  const { isAuthorized, uid } = await authorize(login);
+  const { isAuthorized, user } = await authorize(login);
   if (!isAuthorized) {
-    throw boom.unauthorized('Invalid username or password.');
+    throw boom.unauthorized('Invalid email or password.');
   }
-  res.status(200).send({ uid });
+  const { email, username, fullname, language, phone, device, is_active } = user;
+  res.status(200).send({ email, username, fullname, language, phone, device, is_active });
 }
 
-async function authorize({ username, password }) {
-  const users = await userModel.getUsers({ username, is_active: true });
+async function authorize({ email, password }) {
+  const users = await userModel.getUsers({ email, is_active: true });
 
   let isAuthorized = false;
-  let uid = null;
+  let user = null;
   if (users.length === 1) {
-    const [user] = users;
+    user = users[0];
     isAuthorized = await bcrypt.compare(password, user.password);
-    ({ uid } = user);
   }
-  return { isAuthorized, uid };
+  return { isAuthorized, user };
 }
 
 module.exports = run;
