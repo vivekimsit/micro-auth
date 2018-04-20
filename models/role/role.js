@@ -4,21 +4,22 @@ const joi = require('joi');
 
 const { connection } = require('../db');
 
-const tableName = 'apps';
+const tableName = 'roles';
 
-const appSchema = joi
+const roleSchema = joi
   .object({
     uid: joi.string().required(),
+    app_id: joi.string().required(),
     name: joi.string().required(),
-    secret: joi.string().required(),
+    description: joi.string(),
   })
   .required();
 
 async function addApp(app) {
   // eslint-disable-next-line no-param-reassign
-  app = joi.attempt(app, appSchema);
+  role = joi.attempt(app, roleSchema);
   return connection(tableName)
-    .insert(app)
+    .insert(role)
     .returning('*');
 }
 
@@ -33,3 +34,4 @@ module.exports = {
   addApp,
   getApps,
 };
+

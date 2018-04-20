@@ -6,14 +6,14 @@ const { tableName } = require('../../../app');
 exports.seed = function seed(knex, Promise) {
   return knex(tableName).insert([
     {
-      uid: 1,
+      uid: '1',
       name: 'demo',
       secret: 'demo',
       created_at: '2018-02-22 00:00:00',
       updated_at: '2018-02-22 00:00:00',
     },
     {
-      uid: 2,
+      uid: '2',
       name: 'bar',
       secret: 'bar',
       created_at: '2018-02-22 00:00:00',

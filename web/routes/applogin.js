@@ -13,20 +13,20 @@ const userModel = require('../../models/user');
 const apploginSchema = joi
   .object({
     appname: joi.string().required(),
-    username: joi.string().required(),
+    email: joi.string().required(),
     password: joi.string().required(),
   })
   .required();
 
 async function run(req, res, next) {
-  const { appname, username, password } = joi.attempt(req.body, apploginSchema);
+  const { appname, email, password } = joi.attempt(req.body, apploginSchema);
   const { exists, secret } = await getApp(appname);
   if (!exists) {
     throw boom.badRequest(`Invalid app name ${appname}.`);
   }
-  const { isAuthorized, ...user } = await authorize({ username, password });
+  const { isAuthorized, user } = await authorize({ email, password });
   if (!isAuthorized) {
-    return next(boom.unauthorized('Invalid username or password.'));
+    return next(boom.unauthorized('Invalid email or password.'));
   }
   successResponse(user, secret, res);
 }
@@ -43,24 +43,23 @@ async function getApp(appname) {
   return { exists, secret };
 }
 
-async function authorize({ username, password }) {
-  const users = await userModel.getUsers({ username, is_active: true });
+async function authorize({ email, password }) {
+  const users = await userModel.getUsers({ email, is_active: true });
 
   let isAuthorized = false;
-  let uid = null;
+  let user = null;
   if (users.length === 1) {
     isAuthorized = await bcrypt.compare(password, users[0].password);
-    const [user] = users;
-    ({ uid } = user);
+    user = users[0];
   }
-  return { isAuthorized, uid, username };
+  return { isAuthorized, user };
 }
 
-const successResponse = ({ uid, username }, secret, res) => {
+const successResponse = ({ user }, secret, res) => {
   const expiration = getExpirationTime();
-  const payload = { uid, username, expiration };
+  const payload = { user, expiration };
   const token = jwt.sign(payload, secret);
-  res.status(200).send({ expiration, token, username });
+  res.status(200).send({ expiration, token, user });
 };
 
 const getExpirationTime = () =>

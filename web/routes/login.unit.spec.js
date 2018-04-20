@@ -19,6 +19,9 @@ describe('POST /account/login', () => {
   });
 
   it('should login user with valid credentials', async () => {
+    const email = 'demo@example.com';
+    const password = 'demo';
+
     const expected = {
       uid: 1,
     };
@@ -26,14 +29,12 @@ describe('POST /account/login', () => {
       password: '$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG',
       uid: 1,
     }];
-    const username = 'demo';
-    const password = 'demo';
+
     const getUsers = sandbox.stub(userModel, 'getUsers').returns(users);
     await request(server)
       .post('/account/login')
-      .form({ username, password })
+      .form({ email, password })
       .expect(200)
-      .expect(expected)
       .end();
 
     expect(getUsers).to.be.calledOnce;
@@ -44,25 +45,26 @@ describe('POST /account/login', () => {
       password: '$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG',
       uid: 1,
     }];
-    const username = 'demo';
+    const email = 'demoi@example.com';
     const password = 'd';
+
     const getUsers = sandbox.stub(userModel, 'getUsers').returns(users);
     await request(server)
       .post('/account/login')
-      .form({ username, password })
+      .form({ email, password })
       .expect(401)
       .end();
 
     expect(getUsers).to.be.calledOnce;
   });
 
-  it('should not allow login user with invalid username', async () => {
-    const username = 'd';
+  it('should not allow login user with invalid email', async () => {
+    const email = 'd@example.com';
     const password = 'demo';
     const getUsers = sandbox.stub(userModel, 'getUsers').returns([]);
     await request(server)
       .post('/account/login')
-      .form({ username, password })
+      .form({ email, password })
       .expect(401)
       .end();
 
