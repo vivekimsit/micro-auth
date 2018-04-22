@@ -3,9 +3,11 @@
 const bcrypt = require('bcrypt');
 const boom = require('boom');
 const joi = require('joi');
+const pick = require('lodash/pick');
 
 const logger = require('../logger');
 const userModel = require('../../models/user');
+const roleModel = require('../../models/role');
 
 const loginSchema = joi
   .object({
@@ -20,8 +22,8 @@ async function run(req, res, next) {
   if (!isAuthorized) {
     throw boom.unauthorized('Invalid email or password.');
   }
-  const { email, username, fullname, language, phone, device, is_active } = user;
-  res.status(200).send({ email, username, fullname, language, phone, device, is_active });
+  const publicFields = ['uid', 'username', 'email', 'firstname', 'lastname', 'language', 'roles'];
+  res.status(200).send(pick(user, publicFields));
 }
 
 async function authorize({ email, password }) {
@@ -34,6 +36,11 @@ async function authorize({ email, password }) {
     isAuthorized = await bcrypt.compare(password, user.password);
   }
   return { isAuthorized, user };
+}
+
+async function getUserRoles({ uid }) {
+  const roles = await roleModel.getUserRoles({ user_id: uid });
+  return roles;
 }
 
 module.exports = run;

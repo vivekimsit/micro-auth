@@ -7,6 +7,7 @@ exports.seed = function seed(knex, Promise) {
   return knex(tableName).insert([
     {
       uid: '1',
+      app_id: '1',
       name: 'admin',
       description: 'Super User',
       created_at: '2018-02-22 00:00:00',
@@ -14,6 +15,7 @@ exports.seed = function seed(knex, Promise) {
     },
     {
       uid: '2',
+      app_id: '1',
       name: 'owner',
       description: 'Hotel Owner',
       created_at: '2018-02-22 00:00:00',
@@ -21,6 +23,7 @@ exports.seed = function seed(knex, Promise) {
     },
     {
       uid: '3',
+      app_id: '1',
       name: 'manager',
       description: 'Hotel Manager',
       created_at: '2018-02-22 00:00:00',
@@ -28,6 +31,7 @@ exports.seed = function seed(knex, Promise) {
     },
     {
       uid: '4',
+      app_id: '1',
       name: 'test',
       description: 'Test User',
       created_at: '2018-02-22 00:00:00',

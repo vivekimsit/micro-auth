@@ -15,23 +15,22 @@ const roleSchema = joi
   })
   .required();
 
-async function addApp(app) {
-  // eslint-disable-next-line no-param-reassign
-  role = joi.attempt(app, roleSchema);
+async function getUserRoles({ uid }) {
+  let roles = await _getRoles({ user_id: uid });
+  roles = roles.map(r => r.role_id);
   return connection(tableName)
-    .insert(role)
-    .returning('*');
+    .whereIn('uid', roles)
+    .select();
 }
 
-async function getApps(params = {}) {
-  return connection(tableName)
+async function _getRoles(params) {
+  return connection('user_role')
     .where(params)
     .select();
 }
 
 module.exports = {
   tableName,
-  addApp,
-  getApps,
+  getUserRoles,
 };
 

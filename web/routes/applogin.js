@@ -6,11 +6,12 @@ const joi = require('joi');
 const moment = require('moment');
 // sign with default (HMAC SHA256)
 const jwt = require('jsonwebtoken');
+const pick = require('lodash/pick');
 
 const appModel = require('../../models/app');
 const userModel = require('../../models/user');
 
-const apploginSchema = joi
+const loginSchema = joi
   .object({
     appname: joi.string().required(),
     email: joi.string().required(),
@@ -19,7 +20,7 @@ const apploginSchema = joi
   .required();
 
 async function run(req, res, next) {
-  const { appname, email, password } = joi.attempt(req.body, apploginSchema);
+  const { appname, email, password } = joi.attempt(req.body, loginSchema);
   const { exists, secret } = await getApp(appname);
   if (!exists) {
     throw boom.badRequest(`Invalid app name ${appname}.`);
@@ -49,17 +50,20 @@ async function authorize({ email, password }) {
   let isAuthorized = false;
   let user = null;
   if (users.length === 1) {
-    isAuthorized = await bcrypt.compare(password, users[0].password);
     user = users[0];
+    isAuthorized = await bcrypt.compare(password, user.password);
   }
   return { isAuthorized, user };
 }
 
-const successResponse = ({ user }, secret, res) => {
+const successResponse = (user, secret, res) => {
   const expiration = getExpirationTime();
   const payload = { user, expiration };
   const token = jwt.sign(payload, secret);
-  res.status(200).send({ expiration, token, user });
+
+  const publicFields = ['uid', 'email', 'firstname', 'lastname', 'language', 'roles'];
+  user = pick(user, publicFields);
+  res.status(200).send({ expiration, token, ...user });
 };
 
 const getExpirationTime = () =>

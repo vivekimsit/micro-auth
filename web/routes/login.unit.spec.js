@@ -23,11 +23,21 @@ describe('POST /account/login', () => {
     const password = 'demo';
 
     const expected = {
-      uid: 1,
+      uid: '1',
+      username: 'demo',
+      email: 'demo@example.com',
+      firstname: 'foo',
+      lastname: 'bar',
+      language: 'en-US',
     };
     const users = [{
+      uid: '1',
+      username: 'demo',
+      firstname: 'foo',
+      lastname: 'bar',
+      email: 'demo@example.com',
+      language: 'en-US',
       password: '$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG',
-      uid: 1,
     }];
 
     const getUsers = sandbox.stub(userModel, 'getUsers').returns(users);
@@ -35,6 +45,7 @@ describe('POST /account/login', () => {
       .post('/account/login')
       .form({ email, password })
       .expect(200)
+      .expect(expected)
       .end();
 
     expect(getUsers).to.be.calledOnce;
