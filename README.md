@@ -129,11 +129,3 @@ Check logs
 Stop container
 
 `$ docker stop <container_id>`
-
-### TODO
-
-- [x] Add jwt support
-- [x] Logging
-- [x] Register users per app
-- [ ] Add tests
-- [ ] Add githooks
