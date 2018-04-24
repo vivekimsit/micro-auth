@@ -1,0 +1,2 @@
+models/**/migrations/**/*.js
+models/**/seeds/**/*.js
