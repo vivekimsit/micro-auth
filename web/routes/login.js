@@ -22,7 +22,7 @@ async function run(req, res, next) {
   if (!isAuthorized) {
     throw boom.unauthorized('Invalid email or password.');
   }
-  const publicFields = ['uid', 'username', 'email', 'firstname', 'lastname', 'language', 'roles'];
+  const publicFields = ['uid', 'username', 'email', 'firstname', 'lastname', 'language'];
   res.status(200).send(pick(user, publicFields));
 }
 

@@ -32,8 +32,8 @@ async function run(req, res, next) {
   successResponse(user, secret, res);
 }
 
-async function getApp(appname) {
-  const apps = await appModel.getApps({ name: appname });
+async function getApp(name) {
+  const apps = await appModel.getApps({ name });
   let exists = false;
   let secret = null;
   if (apps.length === 1) {
@@ -61,7 +61,7 @@ const successResponse = (user, secret, res) => {
   const payload = { user, expiration };
   const token = jwt.sign(payload, secret);
 
-  const publicFields = ['uid', 'email', 'firstname', 'lastname', 'language', 'roles'];
+  const publicFields = ['uid', 'email', 'username', 'firstname', 'lastname', 'language', 'roles'];
   user = pick(user, publicFields);
   res.status(200).send({ expiration, token, ...user });
 };

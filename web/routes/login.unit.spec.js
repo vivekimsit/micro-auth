@@ -56,7 +56,7 @@ describe('POST /account/login', () => {
       password: '$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG',
       uid: 1,
     }];
-    const email = 'demoi@example.com';
+    const email = 'demo@example.com';
     const password = 'd';
 
     const getUsers = sandbox.stub(userModel, 'getUsers').returns(users);

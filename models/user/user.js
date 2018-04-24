@@ -33,10 +33,11 @@ async function addUser(user) {
 
 async function getUsers(params = {}) {
   const users = await _getUsers(params);
+  users.roles = [];
   for (let user of users) {
     const { uid } = user;
     const roles = await roleModel.getUserRoles({ uid });
-    user.roles = roles.map(role => role.name);
+    user.roles = [...roles.map(role => role.name)];
   }
   return users;
 }
