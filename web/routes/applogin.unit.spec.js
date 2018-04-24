@@ -46,6 +46,7 @@ describe('POST /account/applogin', () => {
         password:
           '$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG',
         roles: ['admin', 'test'],
+        apps: ['demo', 'bar']
       },
     ];
     const apps = [

@@ -34,8 +34,6 @@ async function addUser(user) {
 
 async function getUsers(params = {}) {
   const users = await getUserOnlyData(params);
-  users.roles = [];
-  users.apps = [];
   for (const user of users) {
     const { uid } = user;
     const roles = await roleModel.getUserRoles({ uid });
