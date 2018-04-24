@@ -6,6 +6,7 @@ const { connection } = require('../db');
 
 const tableName = 'roles';
 
+/*
 const roleSchema = joi
   .object({
     uid: joi.string().required(),
@@ -14,6 +15,7 @@ const roleSchema = joi
     description: joi.string(),
   })
   .required();
+*/
 
 async function getUserRoles({ uid }) {
   let roles = await _getRoles({ user_id: uid });

@@ -29,7 +29,7 @@ async function run(req, res, next) {
   if (!isAuthorized) {
     return next(boom.unauthorized('Invalid email or password.'));
   }
-  successResponse(user, secret, res);
+  return successResponse(user, secret, res);
 }
 
 async function getApp(name) {

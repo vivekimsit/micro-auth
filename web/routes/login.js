@@ -5,9 +5,7 @@ const boom = require('boom');
 const joi = require('joi');
 const pick = require('lodash/pick');
 
-const logger = require('../logger');
 const userModel = require('../../models/user');
-const roleModel = require('../../models/role');
 
 const loginSchema = joi
   .object({
@@ -46,11 +44,6 @@ async function authorize({ email, password }) {
     isAuthorized = await bcrypt.compare(password, user.password);
   }
   return { isAuthorized, user };
-}
-
-async function getUserRoles({ uid }) {
-  const roles = await roleModel.getUserRoles({ user_id: uid });
-  return roles;
 }
 
 module.exports = run;
