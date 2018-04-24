@@ -42,9 +42,14 @@
     "eslint-plugin-import": "^2.8.0",
     "mocha": "^5.0.1",
     "nodemon": "^1.15.0",
+    "pre-push": "^0.1.1",
     "prettier": "1.12.1",
     "sinon": "^4.3.0",
     "sinon-chai": "^2.14.0",
     "super-request": "^1.2.0"
-  }
+  },
+  "pre-push": [
+    "lint",
+    "test-unit"
+  ]
 }
