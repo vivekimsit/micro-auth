@@ -49,7 +49,6 @@
     "super-request": "^1.2.0"
   },
   "pre-push": [
-    "lint",
     "test-unit"
   ]
 }
