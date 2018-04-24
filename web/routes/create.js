@@ -10,7 +10,10 @@ const logger = require('../logger');
 
 const createSchema = joi
   .object({
-    email: joi.string().email().required(),
+    email: joi
+      .string()
+      .email()
+      .required(),
     phone: joi.string(),
     username: joi.string().required(),
     firstname: joi.string().required(),

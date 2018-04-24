@@ -16,5 +16,5 @@ describe('POST /account/login', () => {
       .end();
 
     expect(resp.body).to.be.instanceof(Object);
-  })
+  });
 });

@@ -23,7 +23,7 @@ describe('POST /account/applogin', () => {
     const payload = {
       email: 'demo@example.com',
       appname: 'demo',
-      password: 'demo'
+      password: 'demo',
     };
 
     const expected = {
@@ -35,21 +35,26 @@ describe('POST /account/applogin', () => {
       roles: ['admin', 'test'],
       token: '',
     };
-    const users = [{
-      uid: '1',
-      username: 'demo',
-      firstname: 'foo',
-      lastname: 'bar',
-      email: 'demo@example.com',
-      language: 'en-US',
-      password: '$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG',
-      roles: ['admin', 'test']
-    }];
-    const apps = [{
-      uid: '1',
-      name: 'demo',
-      secret: 'demo'
-    }];
+    const users = [
+      {
+        uid: '1',
+        username: 'demo',
+        firstname: 'foo',
+        lastname: 'bar',
+        email: 'demo@example.com',
+        language: 'en-US',
+        password:
+          '$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG',
+        roles: ['admin', 'test'],
+      },
+    ];
+    const apps = [
+      {
+        uid: '1',
+        name: 'demo',
+        secret: 'demo',
+      },
+    ];
 
     const getApps = sandbox.stub(appModel, 'getApps').returns(apps);
     const getUsers = sandbox.stub(userModel, 'getUsers').returns(users);
@@ -60,7 +65,7 @@ describe('POST /account/applogin', () => {
       .form(payload)
       .expect('Content-Type', /json/)
       .expect(200)
-      .expect(function (res) {
+      .expect(function(res) {
         response = JSON.parse(res);
       })
       .end();
@@ -74,4 +79,3 @@ describe('POST /account/applogin', () => {
     expect(response).to.have.property('roles');
   });
 });
-

@@ -61,7 +61,15 @@ const successResponse = (user, secret, res) => {
   const payload = { user, expiration };
   const token = jwt.sign(payload, secret);
 
-  const publicFields = ['uid', 'email', 'username', 'firstname', 'lastname', 'language', 'roles'];
+  const publicFields = [
+    'uid',
+    'email',
+    'username',
+    'firstname',
+    'lastname',
+    'language',
+    'roles',
+  ];
   user = pick(user, publicFields);
   res.status(200).send({ expiration, token, ...user });
 };

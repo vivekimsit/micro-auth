@@ -30,15 +30,18 @@ describe('POST /account/login', () => {
       lastname: 'bar',
       language: 'en-US',
     };
-    const users = [{
-      uid: '1',
-      username: 'demo',
-      firstname: 'foo',
-      lastname: 'bar',
-      email: 'demo@example.com',
-      language: 'en-US',
-      password: '$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG',
-    }];
+    const users = [
+      {
+        uid: '1',
+        username: 'demo',
+        firstname: 'foo',
+        lastname: 'bar',
+        email: 'demo@example.com',
+        language: 'en-US',
+        password:
+          '$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG',
+      },
+    ];
 
     const getUsers = sandbox.stub(userModel, 'getUsers').returns(users);
     await request(server)
@@ -52,10 +55,13 @@ describe('POST /account/login', () => {
   });
 
   it('should not allow login user with invalid password', async () => {
-    const users = [{
-      password: '$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG',
-      uid: 1,
-    }];
+    const users = [
+      {
+        password:
+          '$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG',
+        uid: 1,
+      },
+    ];
     const email = 'demo@example.com';
     const password = 'd';
 

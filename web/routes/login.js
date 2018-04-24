@@ -11,7 +11,10 @@ const roleModel = require('../../models/role');
 
 const loginSchema = joi
   .object({
-    email: joi.string().email().required(),
+    email: joi
+      .string()
+      .email()
+      .required(),
     password: joi.string().required(),
   })
   .required();
@@ -22,7 +25,14 @@ async function run(req, res, next) {
   if (!isAuthorized) {
     throw boom.unauthorized('Invalid email or password.');
   }
-  const publicFields = ['uid', 'username', 'email', 'firstname', 'lastname', 'language'];
+  const publicFields = [
+    'uid',
+    'username',
+    'email',
+    'firstname',
+    'lastname',
+    'language',
+  ];
   res.status(200).send(pick(user, publicFields));
 }
 

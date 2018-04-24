@@ -16,7 +16,10 @@ const requestSchema = joi
   .required();
 
 async function run(req, res, next) {
-  const { appname, token, role_id, user_id } = joi.attempt(req.body, requestSchema);
+  const { appname, token, role_id, user_id } = joi.attempt(
+    req.body,
+    requestSchema
+  );
   const { exists, secret } = await getApp(appname);
   if (!exists) {
     throw boom.badRequest(`Invalid app name ${appname}.`);
@@ -45,11 +48,10 @@ async function authorize({ token, secret }) {
   try {
     var decoded = jwt.verify(token, secret);
     isAuthorized = true;
-  } catch(err) {
+  } catch (err) {
     return { isAuthorized };
   }
   return { isAuthorized };
 }
 
 module.exports = run;
-

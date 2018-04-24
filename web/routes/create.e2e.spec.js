@@ -21,6 +21,5 @@ describe('POST /account/create', () => {
       .end();
 
     expect(resp.body).to.be.instanceof(Object);
-  })
+  });
 });
-

@@ -22,12 +22,15 @@ describe('POST /account/login', () => {
     const appname = 'demo';
     const role_id = '1';
     const user_id = '1';
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmF0aW9uIjoiMTUyNDI2MjMxNiIsImlhdCI6MTUyNDI1ODcxNn0.qUzqMHW3cts5sxNm2t4fHcCbXOSbxOFa2uz6DtxiiJI";
+    const token =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmF0aW9uIjoiMTUyNDI2MjMxNiIsImlhdCI6MTUyNDI1ODcxNn0.qUzqMHW3cts5sxNm2t4fHcCbXOSbxOFa2uz6DtxiiJI';
 
-    const apps = [{
-      secret: 'demo',
-      name: 'demo',
-    }];
+    const apps = [
+      {
+        secret: 'demo',
+        name: 'demo',
+      },
+    ];
     const getApps = sandbox.stub(appModel, 'getApps').returns(apps);
 
     await request(server)
@@ -39,4 +42,3 @@ describe('POST /account/login', () => {
     expect(getApps).to.be.calledOnce;
   });
 });
-
