@@ -28,8 +28,15 @@ async function getApps(params = {}) {
     .select();
 }
 
+async function getUserApps(params) {
+  return connection('user_app')
+    .where(params)
+    .select();
+}
+
 module.exports = {
   tableName,
   addApp,
   getApps,
+  getUserApps,
 };

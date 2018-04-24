@@ -3,6 +3,7 @@
 const joi = require('joi');
 
 const { connection } = require('../db');
+const appModel = require('../app');
 const roleModel = require('../role');
 
 const tableName = 'users';
@@ -32,17 +33,20 @@ async function addUser(user) {
 }
 
 async function getUsers(params = {}) {
-  const users = await _getUsers(params);
+  const users = await getUserOnlyData(params);
   users.roles = [];
-  for (let user of users) {
+  users.apps = [];
+  for (const user of users) {
     const { uid } = user;
     const roles = await roleModel.getUserRoles({ uid });
+    const apps = await appModel.getUserApps({ uid });
     user.roles = [...roles.map(role => role.name)];
+    user.apps = [...apps.map(app => app.name)];
   }
   return users;
 }
 
-async function _getUsers(params) {
+async function getUserOnlyData(params) {
   return connection(tableName)
     .where(params)
     .select();
