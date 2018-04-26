@@ -33,18 +33,6 @@ async function addUser(user) {
 }
 
 async function getUsers(params = {}) {
-  const users = await getUserOnlyData(params);
-  for (const user of users) {
-    const { uid } = user;
-    const roles = await roleModel.getUserRoles({ uid });
-    const apps = await appModel.getUserApps({ uid });
-    user.roles = [...roles.map(role => role.name)];
-    user.apps = [...apps.map(app => app.name)];
-  }
-  return users;
-}
-
-async function getUserOnlyData(params) {
   return connection(tableName)
     .where(params)
     .select();

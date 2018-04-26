@@ -10,6 +10,7 @@ const pick = require('lodash/pick');
 
 const appModel = require('../../models/app');
 const userModel = require('../../models/user');
+const roleModel = require('../../models/role');
 
 const loginSchema = joi
   .object({
@@ -29,10 +30,11 @@ async function run(req, res, next) {
   if (!isAuthorized) {
     return next(boom.unauthorized('Invalid email or password.'));
   }
-  const hasAppPermission = user.apps.includes(appname);
-  if (!hasAppPermission) {
+  const roles = await getUserRoles(user);
+  if (!roles.length) {
     return next(boom.unauthorized('Invalid app credentials.'));
   }
+  user.roles = roles;
   return successResponse(user, secret, res);
 }
 
@@ -41,7 +43,7 @@ async function getApp(name) {
   let exists = false;
   let secret = null;
   const [app, ...rest] = apps;
-  if (apps) {
+  if (app) {
     exists = true;
     ({ secret } = app);
   }
@@ -57,6 +59,11 @@ async function authorize({ email, password }) {
     isAuthorized = await bcrypt.compare(password, user.password);
   }
   return { isAuthorized, user };
+}
+
+async function getUserRoles({ uid }) {
+  const roles = await roleModel.getUserRoles({ uid });
+  return roles.map(role => role.name);
 }
 
 async function successResponse(user, secret, res) {
