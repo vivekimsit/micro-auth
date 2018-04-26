@@ -32,7 +32,11 @@ async function run(req, res, next) {
   }
   const roles = await getUserRoles(user);
   if (!roles.length) {
-    return next(boom.unauthorized('Invalid app credentials.'));
+    return next(boom.unauthorized('User does not have permission.'));
+  }
+  const apps = await getUserApps(roles);
+  if (!apps.length || !apps.includes(appname)) {
+    return next(boom.unauthorized('User is not authorised for this app.'));
   }
   user.roles = roles;
   return successResponse(user, secret, res);
@@ -62,8 +66,12 @@ async function authorize({ email, password }) {
 }
 
 async function getUserRoles({ uid }) {
-  const roles = await roleModel.getUserRoles({ uid });
-  return roles.map(role => role.name);
+  return await roleModel.getUserRoles({ uid });
+}
+
+async function getUserApps(roles) {
+  const apps = await appModel.getByIds(roles.map(r => r.app_id));
+  return apps.map(app => app.name);
 }
 
 async function successResponse(user, secret, res) {

@@ -19,9 +19,9 @@ const roleSchema = joi
 
 async function getUserRoles({ uid }) {
   let roles = await getUserRoleIds({ user_id: uid });
-  roles = roles.map(r => r.role_id);
+  const ids = roles.map(r => r.role_id);
   return connection(tableName)
-    .whereIn('uid', roles)
+    .whereIn('uid', ids)
     .select();
 }
 

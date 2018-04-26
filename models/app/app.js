@@ -28,9 +28,9 @@ async function getApps(params = {}) {
     .select();
 }
 
-async function getUserApps(params) {
-  return connection('user_app')
-    .where(params)
+async function getByIds(ids = {}) {
+  return connection(tableName)
+    .whereIn('uid', ids)
     .select();
 }
 
@@ -38,5 +38,5 @@ module.exports = {
   tableName,
   addApp,
   getApps,
-  getUserApps,
+  getByIds,
 };
