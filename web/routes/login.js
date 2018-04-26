@@ -23,6 +23,21 @@ async function run(req, res, next) {
   if (!isAuthorized) {
     throw boom.unauthorized('Invalid email or password.');
   }
+  return successResponse(user, res);
+}
+
+async function authorize({ email, password }) {
+  const users = await userModel.getUsers({ email, is_active: true });
+
+  let isAuthorized = false;
+  const [user, ...rest] = users;
+  if (user) {
+    isAuthorized = await bcrypt.compare(password, user.password);
+  }
+  return { isAuthorized, user };
+}
+
+async function successResponse(user, res) {
   const publicFields = [
     'uid',
     'username',
@@ -31,19 +46,9 @@ async function run(req, res, next) {
     'lastname',
     'language',
   ];
+  // eslint-disable-next-line no-param-reassign
+  user = pick(user, publicFields);
   res.status(200).send(pick(user, publicFields));
-}
-
-async function authorize({ email, password }) {
-  const users = await userModel.getUsers({ email, is_active: true });
-
-  let isAuthorized = false;
-  let user = null;
-  if (users.length === 1) {
-    user = users[0];
-    isAuthorized = await bcrypt.compare(password, user.password);
-  }
-  return { isAuthorized, user };
 }
 
 module.exports = run;

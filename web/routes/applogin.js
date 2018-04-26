@@ -10,6 +10,7 @@ const pick = require('lodash/pick');
 
 const appModel = require('../../models/app');
 const userModel = require('../../models/user');
+const roleModel = require('../../models/role');
 
 const loginSchema = joi
   .object({
@@ -29,6 +30,15 @@ async function run(req, res, next) {
   if (!isAuthorized) {
     return next(boom.unauthorized('Invalid email or password.'));
   }
+  const roles = await getUserRoles(user);
+  if (!roles.length) {
+    return next(boom.unauthorized('User does not have permission.'));
+  }
+  const apps = await getUserApps(roles);
+  if (!apps.length || !apps.includes(appname)) {
+    return next(boom.unauthorized('User is not authorised for this app.'));
+  }
+  user.roles = roles;
   return successResponse(user, secret, res);
 }
 
@@ -36,9 +46,9 @@ async function getApp(name) {
   const apps = await appModel.getApps({ name });
   let exists = false;
   let secret = null;
-  if (apps.length === 1) {
+  const [app, ...rest] = apps;
+  if (app) {
     exists = true;
-    const [app] = apps;
     ({ secret } = app);
   }
   return { exists, secret };
@@ -48,15 +58,23 @@ async function authorize({ email, password }) {
   const users = await userModel.getUsers({ email, is_active: true });
 
   let isAuthorized = false;
-  let user = null;
-  if (users.length === 1) {
-    user = users[0];
+  const [user, ...rest] = users;
+  if (user) {
     isAuthorized = await bcrypt.compare(password, user.password);
   }
   return { isAuthorized, user };
 }
 
-const successResponse = (user, secret, res) => {
+async function getUserRoles({ uid }) {
+  return await roleModel.getUserRoles({ uid });
+}
+
+async function getUserApps(roles) {
+  const apps = await appModel.getByIds(roles.map(r => r.app_id));
+  return apps.map(app => app.name);
+}
+
+async function successResponse(user, secret, res) {
   const expiration = getExpirationTime();
   const payload = { user, expiration };
   const token = jwt.sign(payload, secret);
@@ -70,9 +88,10 @@ const successResponse = (user, secret, res) => {
     'language',
     'roles',
   ];
+  // eslint-disable-next-line no-param-reassign
   user = pick(user, publicFields);
-  res.status(200).send({ expiration, token, ...user });
-};
+  return res.status(200).send({ expiration, token, ...user });
+}
 
 const getExpirationTime = () =>
   // returns time in seconds

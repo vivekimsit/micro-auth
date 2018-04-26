@@ -13,6 +13,9 @@ exports.seed = function seed(knex, Promise) {
       user_id: '1',
       role_id: '4',
     },
+    {
+      user_id: '2',
+      role_id: '1',
+    },
   ]);
 };
-
