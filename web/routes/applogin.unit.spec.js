@@ -82,6 +82,7 @@ describe('POST /account/applogin', () => {
 
     expect(getUsers).to.be.calledOnce;
     expect(getApps).to.be.calledOnce;
+    expect(getUserRoles).to.be.calledOnce;
 
     expect(response).to.have.property('email');
     expect(response).to.have.property('token');
@@ -134,7 +135,7 @@ describe('POST /account/applogin', () => {
     const roles = [
       {
         uid: '1',
-        app_id: '1',
+        app_id: '2',
         name: 'user',
         description: 'App User',
       },
