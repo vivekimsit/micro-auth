@@ -22,6 +22,7 @@ const userSchema = joi
     username: joi.string().required(),
     is_active: joi.boolean().default(true),
   })
+  .unknown()
   .required();
 
 async function addUser(user) {

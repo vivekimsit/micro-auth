@@ -90,7 +90,7 @@ async function successResponse(user, secret, res) {
   ];
   // eslint-disable-next-line no-param-reassign
   user = pick(user, publicFields);
-  return res.status(200).send({ expiration, token, ...user });
+  return res.status(200).json({ expiration, token, ...user });
 }
 
 const getExpirationTime = () =>
