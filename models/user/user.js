@@ -3,8 +3,6 @@
 const joi = require('joi');
 
 const { connection } = require('../db');
-const appModel = require('../app');
-const roleModel = require('../role');
 
 const tableName = 'users';
 

@@ -52,7 +52,10 @@ async function isEmailTaken({ email }) {
 }
 
 async function getDefaultRoleForApp({ uid }) {
-  const [role, ...rest] = await roleModel.getRoles({ 'app_id': uid, 'name': 'user' });
+  const [role, ...rest] = await roleModel.getRoles({
+    app_id: uid,
+    name: 'user',
+  });
   return role;
 }
 
@@ -70,8 +73,11 @@ async function addAccount(account) {
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(account.password, salt);
 
+  // eslint-disable-next-line no-param-reassign
   account.uid = uuidv4();
+  // eslint-disable-next-line no-param-reassign
   account.salt = salt;
+  // eslint-disable-next-line no-param-reassign
   account.password = hash;
   const user = await userModel.addUser(account);
   return user;
@@ -88,13 +94,12 @@ async function successResponse(user, role, res) {
     'uid',
     'username',
   ];
-  const roleFields = [
-    'name',
-    'description'
-  ];
+  const roleFields = ['name', 'description'];
+  // eslint-disable-next-line no-param-reassign
   user = pick(user, userFields);
+  // eslint-disable-next-line no-param-reassign
   role = pick(role, roleFields);
-  res.status(201).json({ ...user, 'roles': [role] });
+  res.status(201).json({ ...user, roles: [role] });
 }
 
 module.exports = run;

@@ -31,7 +31,7 @@ async function getRoles(params = {}) {
 }
 
 async function getUserRoles({ uid }) {
-  let roles = await getUserRoleIds({ user_id: uid });
+  const roles = await getUserRoleIds({ user_id: uid });
   const ids = roles.map(r => r.role_id);
   return connection(tableName)
     .whereIn('uid', ids)
@@ -40,7 +40,7 @@ async function getUserRoles({ uid }) {
 
 async function addUserRole(userId, roleId) {
   return connection('user_role')
-    .insert({ 'user_id': userId, 'role_id': roleId })
+    .insert({ user_id: userId, role_id: roleId })
     .returning('*');
 }
 

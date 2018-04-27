@@ -29,17 +29,21 @@ describe('POST /account/create', () => {
       password: 'demo',
       username: 'demo',
     };
-    const apps = [{
-      uid: '1',
-      name: 'demo',
-      secret: 'demo',
-    }];
-    const roles = [{
-      uid: '1',
-      app_id: '1',
-      name: 'user',
-      description: 'App User',
-    }];
+    const apps = [
+      {
+        uid: '1',
+        name: 'demo',
+        secret: 'demo',
+      },
+    ];
+    const roles = [
+      {
+        uid: '1',
+        app_id: '1',
+        name: 'user',
+        description: 'App User',
+      },
+    ];
 
     const addUser = sandbox.stub(userModel, 'addUser').returns({
       uid: '1',
@@ -55,7 +59,9 @@ describe('POST /account/create', () => {
     const getApps = sandbox.stub(appModel, 'getApps').returns(apps);
     const getUsers = sandbox.stub(userModel, 'getUsers').returns([]);
     const getRoles = sandbox.stub(roleModel, 'getRoles').returns(roles);
-    const addUserRole = sandbox.stub(roleModel, 'addUserRole').returns({ 'user_id': '1', 'role_id': '1' });
+    const addUserRole = sandbox
+      .stub(roleModel, 'addUserRole')
+      .returns({ user_id: '1', role_id: '1' });
 
     let response;
     await request(server)
@@ -77,4 +83,3 @@ describe('POST /account/create', () => {
     expect(response).to.have.property('roles');
   });
 });
-

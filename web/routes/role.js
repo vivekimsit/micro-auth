@@ -16,7 +16,7 @@ const requestSchema = joi
   .required();
 
 async function run(req, res, next) {
-  const { appname, token, role_id, user_id } = joi.attempt(
+  const { appname, token } = joi.attempt(
     req.body,
     requestSchema
   );
@@ -24,7 +24,7 @@ async function run(req, res, next) {
   if (!exists) {
     throw boom.badRequest(`Invalid app name ${appname}.`);
   }
-  const { isAuthorized, user } = await authorize({ token, secret });
+  const { isAuthorized } = await authorize({ token, secret });
   if (!isAuthorized) {
     throw boom.unauthorized('Invalid email or password.');
   }
@@ -46,7 +46,7 @@ async function getApp(appname) {
 async function authorize({ token, secret }) {
   let isAuthorized = false;
   try {
-    var decoded = jwt.verify(token, secret);
+    jwt.verify(token, secret);
     isAuthorized = true;
   } catch (err) {
     return { isAuthorized };

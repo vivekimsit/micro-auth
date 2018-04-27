@@ -52,7 +52,8 @@ describe('POST /account/applogin', () => {
         lastname: 'bar',
         email: 'demo@example.com',
         language: 'en-US',
-        password: '$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG',
+        password:
+          '$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG',
       },
     ];
     const apps = [
@@ -102,7 +103,8 @@ describe('POST /account/applogin', () => {
         lastname: 'bar',
         email: 'demo@example.com',
         language: 'en-US',
-        password: '$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG',
+        password:
+          '$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG',
       },
     ];
     const apps = [
