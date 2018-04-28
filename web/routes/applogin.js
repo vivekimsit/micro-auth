@@ -38,8 +38,7 @@ async function run(req, res, next) {
   if (!apps.length || !apps.includes(appname)) {
     return next(boom.unauthorized('User is not authorised for this app.'));
   }
-  user.roles = roles;
-  return successResponse(user, secret, res);
+  return successResponse(user, roles, secret, res);
 }
 
 async function getApp(name) {
@@ -74,23 +73,25 @@ async function getUserApps(roles) {
   return apps.map(app => app.name);
 }
 
-async function successResponse(user, secret, res) {
+async function successResponse(user, roles, secret, res) {
   const expiration = getExpirationTime();
   const payload = { user, expiration };
   const token = jwt.sign(payload, secret);
 
-  const publicFields = [
+  const userFields = [
     'uid',
     'email',
     'username',
     'firstname',
     'lastname',
     'language',
-    'roles',
   ];
+  const roleFields = ['name', 'description'];
   // eslint-disable-next-line no-param-reassign
-  user = pick(user, publicFields);
-  return res.status(200).json({ expiration, token, ...user });
+  user = pick(user, userFields);
+  // eslint-disable-next-line no-param-reassign
+  roles = roles.map(role => pick(role, roleFields));
+  return res.status(200).json({ expiration, token, ...user, roles: roles });
 }
 
 const getExpirationTime = () =>
