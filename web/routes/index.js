@@ -10,9 +10,9 @@ const { catchAsyncErrors } = require('../lib/utils');
 
 const router = new Router();
 
-router.post('/account/login', catchAsyncErrors(login));
-router.post('/account/create', catchAsyncErrors(create));
-router.post('/account/applogin', catchAsyncErrors(applogin));
-router.post('/account/roles', catchAsyncErrors(role));
+router.post('/login', catchAsyncErrors(login));
+router.post('/create', catchAsyncErrors(create));
+router.post('/applogin', catchAsyncErrors(applogin));
+router.post('/roles', catchAsyncErrors(role));
 
 module.exports = router;

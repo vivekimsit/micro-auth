@@ -18,7 +18,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(logRequests);
 app.use(cors());
-app.use(routes);
+
+app.use('/account', routes);
 app.use(logErrors);
 app.use(errorHandler);
 
