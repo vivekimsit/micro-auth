@@ -16,10 +16,7 @@ const requestSchema = joi
   .required();
 
 async function run(req, res, next) {
-  const { appname, token } = joi.attempt(
-    req.body,
-    requestSchema
-  );
+  const { appname, token } = joi.attempt(req.body, requestSchema);
   const { exists, secret } = await getApp(appname);
   if (!exists) {
     throw boom.badRequest(`Invalid app name ${appname}.`);
