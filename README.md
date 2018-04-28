@@ -1,27 +1,27 @@
 # micro-auth
 Authentication microservice
 
-### run
+## run
 `$ npm run start:dev`
 
 The above command will start the server in watch mode.
 
-### lint
+## lint
 `$ npm run lint`
 
 The above command will run `eslint`.
 
-### migrate
+## migrate
 `$ npm run migrate-db`
 
 The above command will create all tables with proper schemas.
 
-### seed data
+## seed data
 `$ npm run seed-db`
 
 The above command will populate all tables with sample data.
 
-### setup
+## setup
 Create database `microauth` if not exists
 
 `mysql> create database microauth`
@@ -33,13 +33,13 @@ $ npm run seed-db
 $ npm run start:dev
 ```
 
-### logging
+## logging
 
 All messages are logged in `combine.log` file.
 
 Error messages are logged in `error.log` file.
 
-### authentication
+## authentication
 
 - Authenticating an user
 
@@ -98,11 +98,11 @@ Reponse:
 }
 `
 
-### authorization
+## authorization
 
 TODO
 
-### Docker
+## Docker
 
 #### Build image
 
@@ -129,3 +129,7 @@ Check logs
 Stop container
 
 `$ docker stop <container_id>`
+
+## Related
+
+- [micro-app](https://github.com/vivekimsit/micro-app) - Example client application
