@@ -7,7 +7,7 @@ const fs = require('fs');
 const http = require('http');
 const path = require('path');
 
-const { errorHandler, logErrors } = require('./utils');
+const { errorHandler, logErrors } = require('./lib/utils');
 const routes = require('./routes');
 
 const app = express();
