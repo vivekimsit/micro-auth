@@ -31,8 +31,24 @@ function logErrors(err, req, res, next) {
   next(err);
 }
 
+function logRequests(req, res, next) {
+  const startTime = new Date();
+  const payload = JSON.stringify(req.body);
+  function log() {
+    const responseTime = new Date() - startTime;
+    logger.info(`Payload: ${payload}`);
+    logger.info(`Response time: ${responseTime}ms`);
+    res.removeListener('finish', log);
+    res.removeListener('close', log);
+  }
+  res.on('finish', log);
+  res.on('close', log);
+  next();
+}
+
 module.exports = {
   catchAsyncErrors,
   errorHandler,
   logErrors,
+  logRequests,
 };

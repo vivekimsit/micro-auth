@@ -7,7 +7,7 @@ const fs = require('fs');
 const http = require('http');
 const path = require('path');
 
-const { errorHandler, logErrors } = require('./lib/utils');
+const { errorHandler, logErrors, logRequests } = require('./lib/utils');
 const routes = require('./routes');
 
 const app = express();
@@ -16,6 +16,7 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
+app.use(logRequests);
 app.use(cors());
 app.use(routes);
 app.use(logErrors);
