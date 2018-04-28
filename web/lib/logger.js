@@ -3,14 +3,14 @@
 const { createLogger, format, transports } = require('winston');
 const config = require('../config');
 
-const { combine, colorize, timestamp, label, printf } = format;
+const { printf } = format;
 
-const customFormat = printf(info => {
-  const { timestamp, label, level, message } = info;
+const customFormat = printf(({ timestamp, label, level, message }) => {
   const ts = timestamp.slice(0, 19).replace('T', ' ');
   return `${ts} [${label}] ${level}: ${message}`;
 });
 
+const { combine, colorize, timestamp, label } = format;
 const logger = createLogger({
   format: combine(label({ label: 'auth' }), timestamp(), customFormat),
   transports: [
@@ -25,15 +25,12 @@ const logger = createLogger({
 
 // If we're not in production then log to the `console`
 if (config.env !== 'production') {
-  logger.add(
-    new transports.Console({
-      format: combine(
-        colorize(),
-        customFormat
-        // prettyPrint(),
-      ),
-    })
-  );
+  logger.add(new transports.Console({
+    format: combine(
+      colorize(),
+      customFormat
+    )
+  }));
 }
 
 logger.level = config.logger.level;

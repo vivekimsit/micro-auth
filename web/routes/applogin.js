@@ -45,6 +45,7 @@ async function getApp(name) {
   const apps = await appModel.getApps({ name });
   let exists = false;
   let secret = null;
+  // eslint-disable-next-line no-unused-vars
   const [app, ...rest] = apps;
   if (app) {
     exists = true;
@@ -57,6 +58,7 @@ async function authorize({ email, password }) {
   const users = await userModel.getUsers({ email, is_active: true });
 
   let isAuthorized = false;
+  // eslint-disable-next-line no-unused-vars
   const [user, ...rest] = users;
   if (user) {
     isAuthorized = await bcrypt.compare(password, user.password);
@@ -65,7 +67,7 @@ async function authorize({ email, password }) {
 }
 
 async function getUserRoles({ uid }) {
-  return await roleModel.getUserRoles({ uid });
+  return roleModel.getUserRoles({ uid });
 }
 
 async function getUserApps(roles) {
@@ -91,7 +93,7 @@ async function successResponse(user, roles, secret, res) {
   user = pick(user, userFields);
   // eslint-disable-next-line no-param-reassign
   roles = roles.map(role => pick(role, roleFields));
-  return res.status(200).json({ expiration, token, ...user, roles: roles });
+  return res.status(200).json({ expiration, token, ...user, roles });
 }
 
 const getExpirationTime = () =>

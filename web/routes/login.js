@@ -30,6 +30,7 @@ async function authorize({ email, password }) {
   const users = await userModel.getUsers({ email, is_active: true });
 
   let isAuthorized = false;
+  // eslint-disable-next-line no-unused-vars
   const [user, ...rest] = users;
   if (user) {
     isAuthorized = await bcrypt.compare(password, user.password);

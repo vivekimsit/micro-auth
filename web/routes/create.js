@@ -52,6 +52,7 @@ async function isEmailTaken({ email }) {
 }
 
 async function getDefaultRoleForApp({ uid }) {
+  // eslint-disable-next-line no-unused-vars
   const [role, ...rest] = await roleModel.getRoles({
     app_id: uid,
     name: 'user',
@@ -61,6 +62,7 @@ async function getDefaultRoleForApp({ uid }) {
 
 async function getApp(name) {
   const apps = await appModel.getApps({ name });
+  // eslint-disable-next-line no-unused-vars
   const [app, ...rest] = apps;
   return app;
 }

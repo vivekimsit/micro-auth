@@ -11,7 +11,7 @@ const logger = require('./logger');
  * garbage collection.
  */
 const catchAsyncErrors = middleware => (req, res, next) =>
-  Promise.resolve(middleware(req, res, next)).catch(err => {
+  Promise.resolve(middleware(req, res, next)).catch((err) => {// eslint-disable-line
     if (err.isJoi) {
       const message = err.details.map(detail => detail.message).join(', ');
       return next(boom.badRequest(message));
