@@ -25,12 +25,11 @@ const logger = createLogger({
 
 // If we're not in production then log to the `console`
 if (config.env !== 'production') {
-  logger.add(new transports.Console({
-    format: combine(
-      colorize(),
-      customFormat
-    )
-  }));
+  logger.add(
+    new transports.Console({
+      format: combine(colorize(), customFormat),
+    })
+  );
 }
 
 logger.level = config.logger.level;
