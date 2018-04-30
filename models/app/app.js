@@ -2,8 +2,8 @@
 
 const joi = require('joi');
 
-const { connection } = require('../db');
-
+const base = require('../base');
+const Role = require('../role');
 const tableName = 'apps';
 
 const appSchema = joi
@@ -13,6 +13,16 @@ const appSchema = joi
     secret: joi.string().required(),
   })
   .required();
+
+let App, Apps;
+
+App = base.Model.extend({
+  tableName,
+
+  roles: function() {
+    return this.hasMany(Role);
+  }
+});
 
 async function addApp(app) {
   // eslint-disable-next-line no-param-reassign
@@ -34,9 +44,12 @@ async function getByIds(ids = {}) {
     .select();
 }
 
+Apps = base.Collection.extend({
+  model: App
+});
+
 module.exports = {
   tableName,
-  addApp,
-  getApps,
-  getByIds,
+  App: base.model('App', App),
+  Apps: base.collection('Apps', Apps)
 };

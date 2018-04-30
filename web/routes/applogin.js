@@ -8,7 +8,7 @@ const moment = require('moment');
 const jwt = require('jsonwebtoken');
 const pick = require('lodash/pick');
 
-const appModel = require('../../models/app');
+const { App, Apps } = require('../../models/app');
 const userModel = require('../../models/user');
 const roleModel = require('../../models/role');
 
@@ -42,14 +42,12 @@ async function run(req, res, next) {
 }
 
 async function getApp(name) {
-  const apps = await appModel.getApps({ name });
   let exists = false;
   let secret = null;
-  // eslint-disable-next-line no-unused-vars
-  const [app, ...rest] = apps;
+  const app = await Apps.findOne({ name });
   if (app) {
     exists = true;
-    ({ secret } = app);
+    secret = app.get('secret');
   }
   return { exists, secret };
 }

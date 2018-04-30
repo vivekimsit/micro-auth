@@ -2,8 +2,9 @@
 
 const joi = require('joi');
 
-const { connection } = require('../db');
-
+const base = require('../base');
+const { App } = require('../app');
+const { User } = require('../user');
 const tableName = 'roles';
 
 const roleSchema = joi
@@ -15,6 +16,20 @@ const roleSchema = joi
   })
   .unknown()
   .required();
+
+let Role, Roles;
+
+Role = base.Model.extend({
+  tableName,
+
+  app: function () {
+    return this.belongsTo(App);
+  },
+
+  users: function () {
+    return this.belongsToMany(User);
+  }
+});
 
 async function addRole(role) {
   // eslint-disable-next-line no-param-reassign

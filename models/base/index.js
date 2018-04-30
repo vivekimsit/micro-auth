@@ -73,7 +73,6 @@ Bookshelf.Model = Bookshelf.Model.extend({
    * @return {Promise(bookshelf.Model)}
    */
   findOne: async function (query, options) {
-    options = extend({ require: true }, options);
     return this.forge(query).fetch(options);
   },
 
@@ -97,7 +96,6 @@ Bookshelf.Model = Bookshelf.Model.extend({
    * @return {Promise(bookshelf.Model)}
    */
   update: async function (data, options) {
-    options = extend({ patch: true, require: true }, options);
     return this.forge({ [this.prototype.idAttribute]: options.id })
       .fetch(options)
       .then(function (model) {

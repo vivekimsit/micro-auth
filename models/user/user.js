@@ -1,9 +1,10 @@
 'use strict';
 
 const joi = require('joi');
+const pick = require('lodash/pick');
 
-const { connection } = require('../db');
-
+const base = require('../base');
+const Role = require('../role');
 const tableName = 'users';
 
 const userSchema = joi
@@ -23,22 +24,34 @@ const userSchema = joi
   .unknown()
   .required();
 
-async function addUser(user) {
-  // eslint-disable-next-line no-param-reassign
-  user = joi.attempt(user, userSchema);
-  return connection(tableName)
-    .insert(user)
-    .returning('*');
-}
+let User, Users;
 
-async function getUsers(params = {}) {
-  return connection(tableName)
-    .where(params)
-    .select();
-}
+User = base.Model.extend({
+  tableName,
+
+  roles: function () {
+    return this.belongsToMany(Role, 'users_roles', 'user_id', 'role_id');
+  },
+
+  toJson: function () {
+    const fields = [
+      'uid',
+      'username',
+      'email',
+      'firstname',
+      'lastname',
+      'language',
+    ];
+    return pick(this, fields);
+  }
+});
+
+Users = base.Collection.extend({
+  model: User
+});
 
 module.exports = {
   tableName,
-  addUser,
-  getUsers,
+  User,
+  Users,
 };
