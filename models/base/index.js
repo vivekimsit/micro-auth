@@ -4,7 +4,7 @@ const bookshelf = require('bookshelf');
 
 const { connection } = require('../db');
 
-const Bookshelf = bookshelf(db.knex);
+const Bookshelf = bookshelf(connection);
 
 Bookshelf.Model = Bookshelf.Model.extend({
   // Bookshelf `hasTimestamps` - handles created_at and updated_at properties
@@ -82,7 +82,7 @@ Bookshelf.Model = Bookshelf.Model.extend({
    * @param {Object} [options] Options for model.save
    * @return {Promise(bookshelf.Model)}
    */
-  create: aync function (data, options) {
+  create: async function (data, options) {
     return this.forge(data).save(null, options);
   },
 
