@@ -3,15 +3,14 @@
 const knex = require('knex');
 
 const config = require('./config');
-
 const connection = knex(config);
 
 async function init() {
-  Promise.resolve(knex);
+  return Promise.resolve(knex);
 }
 
 async function close() {
-  await connection.destroy();
+  return connection.destroy();
 }
 
 module.exports = {

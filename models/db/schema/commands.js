@@ -9,15 +9,10 @@ function addTableColumn(tableName, table, columnName) {
   let column;
   const columnSpec = schema[tableName][columnName];
 
-  // creation distinguishes between text with fieldtype, string with maxlength and all others
-  if (columnSpec.type === 'text' && columnSpec.hasOwnProperty('fieldtype')) {
-    column = table[columnSpec.type](columnName, columnSpec.fieldtype);
-  } else if (columnSpec.type === 'string') {
-    if (columnSpec.hasOwnProperty('maxlength')) {
-      column = table[columnSpec.type](columnName, columnSpec.maxlength);
-    } else {
-      column = table[columnSpec.type](columnName, 191);
-    }
+  if (columnSpec.type === 'string') {
+    const length =
+      (columnSpec.hasOwnProperty('primary') && columnSpec.maxlength) || 191;
+    column = table[columnSpec.type](columnName, length);
   } else {
     column = table[columnSpec.type](columnName);
   }
@@ -27,32 +22,24 @@ function addTableColumn(tableName, table, columnName) {
   } else {
     column.nullable(false);
   }
+
   if (columnSpec.hasOwnProperty('primary') && columnSpec.primary === true) {
     column.primary();
   }
   if (columnSpec.hasOwnProperty('unique') && columnSpec.unique) {
     column.unique();
   }
-  if (columnSpec.hasOwnProperty('unsigned') && columnSpec.unsigned) {
-    column.unsigned();
-  }
-  if (columnSpec.hasOwnProperty('references')) {
-    column.references(columnSpec.references);
-  }
-  if (columnSpec.hasOwnProperty('defaultTo')) {
-    column.defaultTo(columnSpec.defaultTo);
-  }
 }
 
 async function createTable(table, transaction) {
   const connection = transaction || connection;
   const exists = connection.schema.hasTable(table);
-  if (!exists) {
+  if (exists) {
     return null;
   }
-  return connection.schema.createTable(table, function (t) {
+  return connection.schema.createTable(table, function(t) {
     const columnKeys = _.keys(schema[table]);
-    _.each(columnKeys, function (column) {
+    _.each(columnKeys, function(column) {
       return addTableColumn(table, t, column);
     });
   });
@@ -64,5 +51,5 @@ async function deleteTable(table, transaction) {
 
 module.exports = {
   createTable,
-  deleteTable
+  deleteTable,
 };
