@@ -1,0 +1,18 @@
+{
+    "models": [
+      {
+        "name": "role",
+        "entries": [
+          {
+            "name": "Administrator",
+            "description": "Administrators"
+          },
+          {
+            "name": "Owner",
+            "description": "Hotel Owner"
+          }
+        ]
+      }
+    ]
+}
+

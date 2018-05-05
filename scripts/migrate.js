@@ -16,6 +16,6 @@ knexMigrator.isDatabaseOK()
       knexMigrator.init();
     } else {
       // database is not migrated?
-      //knexMigrator.migrate();
+      knexMigrator.migrate();
     }
   });

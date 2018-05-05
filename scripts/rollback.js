@@ -14,9 +14,9 @@ const knexMigrator = new KnexMigrator({
 knexMigrator.isDatabaseOK()
   .then(function() {
     console.log('Database is OK');
+    knexMigrator.rollback();
   })
   .catch(function(err) {
     console.log(err);
-    knexMigrator.rollback();
   });
 
