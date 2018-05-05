@@ -1,5 +1,5 @@
 'use strict';
 
-const db = require('./db');
-
-module.exports = { db };
+['app', 'role', 'user', 'db'].forEach(name => {
+  Object.assign(exports, { [name]: require(`./${name}`) });
+});

@@ -17,9 +17,7 @@ const roleSchema = joi
   .unknown()
   .required();
 
-let Role, Roles;
-
-Role = base.Model.extend({
+const Role = base.Model.extend({
   tableName,
 
   app: function () {
@@ -31,44 +29,7 @@ Role = base.Model.extend({
   }
 });
 
-async function addRole(role) {
-  // eslint-disable-next-line no-param-reassign
-  role = joi.attempt(role, roleSchema);
-  return connection(tableName)
-    .insert(role)
-    .returning('*');
-}
-
-async function getRoles(params = {}) {
-  return connection(tableName)
-    .where(params)
-    .select();
-}
-
-async function getUserRoles({ uid }) {
-  const roles = await getUserRoleIds({ user_id: uid });
-  const ids = roles.map(r => r.role_id);
-  return connection(tableName)
-    .whereIn('uid', ids)
-    .select();
-}
-
-async function addUserRole(userId, roleId) {
-  return connection('user_role')
-    .insert({ user_id: userId, role_id: roleId })
-    .returning('*');
-}
-
-async function getUserRoleIds(params) {
-  return connection('user_role')
-    .where(params)
-    .select();
-}
-
 module.exports = {
   tableName,
-  addRole,
-  getRoles,
-  addUserRole,
-  getUserRoles,
+  Role,
 };
