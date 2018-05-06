@@ -9,7 +9,9 @@ const schemaTables = Object.keys(schema);
 module.exports.up = function createTables({ connection }) {
   return Promise.mapSeries(schemaTables, function createTable(table) {
     logger.info(`Creating table: ${table}`);
-    return commands.createTable(table, connection).catch(err => console.log(err));
+    return commands
+      .createTable(table, connection)
+      .catch(err => console.log(err));
   });
 };
 

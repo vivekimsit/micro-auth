@@ -21,7 +21,7 @@ App = Base.Model.extend({
 
   roles: function() {
     return this.hasMany(Role);
-  }
+  },
 });
 
 async function addApp(app) {
@@ -45,11 +45,11 @@ async function getByIds(ids = {}) {
 }
 
 Apps = Base.Collection.extend({
-  model: App
+  model: App,
 });
 
 module.exports = {
   tableName,
   App: Base.model('App', App),
-  Apps: Base.collection('Apps', Apps)
+  Apps: Base.collection('Apps', Apps),
 };

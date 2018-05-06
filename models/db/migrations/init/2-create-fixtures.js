@@ -10,41 +10,47 @@ const models = require('../../../');
 //console.log(models);
 
 module.exports.config = {
-  transaction: true
+  transaction: true,
 };
 
 module.exports.up = function insertFixtures({ connection }) {
-
-  return Promise.mapSeries(fixtures.models, function (model) {
+  return Promise.mapSeries(fixtures.models, function(model) {
     logger.info('Model: ' + model.name);
 
     return addFixturesForModel(model);
-  }).then(function () {
-    return Promise.mapSeries(fixtures.relations || [], function (relation) {
-      logger.info('Relation: ' + relation.from.model + ' to ' + relation.to.model);
+  }).then(function() {
+    return Promise.mapSeries(fixtures.relations || [], function(relation) {
+      logger.info(
+        'Relation: ' + relation.from.model + ' to ' + relation.to.model
+      );
       return addFixturesForRelation(relation);
     });
   });
 };
 
 function addFixturesForModel(modelFixture, options) {
-  options = Object.assign({
-    importing: true,
-    internal: true,
-  }, options);
+  options = Object.assign(
+    {
+      importing: true,
+      internal: true,
+    },
+    options
+  );
 
   modelFixture = _.cloneDeep(modelFixture);
 
-  return Promise.mapSeries(modelFixture.entries, function (entry) {
-    console.log(this);
+  return Promise.mapSeries(modelFixture.entries, function(entry) {
     return models[modelFixture.name]
-      .findOne(entry.id ? {id: entry.id} : entry, options)
-      .then(function (found) {
+      .findOne(entry.id ? { id: entry.id } : entry, options)
+      .then(function(found) {
         if (!found) {
           return models[modelFixture.name].create(entry, options);
         }
       });
-  }).then(function (results) {
-    return { expected: modelFixture.entries.length, done: _.compact(results).length };
+  }).then(function(results) {
+    return {
+      expected: modelFixture.entries.length,
+      done: _.compact(results).length,
+    };
   });
-};
+}

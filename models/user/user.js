@@ -29,11 +29,11 @@ let User, Users;
 User = base.Model.extend({
   tableName,
 
-  roles: function () {
+  roles: function() {
     return this.belongsToMany(Role, 'users_roles', 'user_id', 'role_id');
   },
 
-  toJson: function () {
+  toJson: function() {
     const fields = [
       'uid',
       'username',
@@ -43,11 +43,11 @@ User = base.Model.extend({
       'language',
     ];
     return pick(this, fields);
-  }
+  },
 });
 
 Users = base.Collection.extend({
-  model: User
+  model: User,
 });
 
 module.exports = {

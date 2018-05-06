@@ -20,13 +20,13 @@ const roleSchema = joi
 const Role = Base.Model.extend({
   tableName,
 
-  app: function () {
+  app: function() {
     return this.belongsTo(App);
   },
 
-  users: function () {
+  users: function() {
     return this.belongsToMany(User);
-  }
+  },
 });
 
 module.exports = {
