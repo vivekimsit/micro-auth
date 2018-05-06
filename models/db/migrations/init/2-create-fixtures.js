@@ -7,7 +7,7 @@ const fixtures = require('../../schema/fixtures');
 const logger = require('../../../../web/lib/logger');
 const models = require('../../../');
 
-console.log(models);
+//console.log(models);
 
 module.exports.config = {
   transaction: true
@@ -20,7 +20,7 @@ module.exports.up = function insertFixtures({ connection }) {
 
     return addFixturesForModel(model);
   }).then(function () {
-    return Promise.mapSeries(fixtures.relations, function (relation) {
+    return Promise.mapSeries(fixtures.relations || [], function (relation) {
       logger.info('Relation: ' + relation.from.model + ' to ' + relation.to.model);
       return addFixturesForRelation(relation);
     });
@@ -28,19 +28,23 @@ module.exports.up = function insertFixtures({ connection }) {
 };
 
 function addFixturesForModel(modelFixture, options) {
-    modelFixture = _.cloneDeep(modelFixture);
+  options = Object.assign({
+    importing: true,
+    internal: true,
+  }, options);
 
-    return Promise.mapSeries(modelFixture.entries, function (entry) {
-        console.log(modelFixture.name);
-        console.log(models[modelFixture.name]);
-        return models[modelFixture.name]
-            .findOne(entry.id ? {id: entry.id} : entry, options)
-            .then(function (found) {
-              if (!found) {
-                return models[modelFixture.name].add(entry, options);
-              }
-            });
-    }).then(function (results) {
-        return { expected: modelFixture.entries.length, done: _.compact(results).length };
-    });
+  modelFixture = _.cloneDeep(modelFixture);
+
+  return Promise.mapSeries(modelFixture.entries, function (entry) {
+    console.log(this);
+    return models[modelFixture.name]
+      .findOne(entry.id ? {id: entry.id} : entry, options)
+      .then(function (found) {
+        if (!found) {
+          return models[modelFixture.name].create(entry, options);
+        }
+      });
+  }).then(function (results) {
+    return { expected: modelFixture.entries.length, done: _.compact(results).length };
+  });
 };

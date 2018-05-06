@@ -2,7 +2,7 @@
 
 const joi = require('joi');
 
-const base = require('../base');
+const Base = require('../base');
 const Role = require('../role');
 const tableName = 'apps';
 
@@ -16,7 +16,7 @@ const appSchema = joi
 
 let App, Apps;
 
-App = base.Model.extend({
+App = Base.Model.extend({
   tableName,
 
   roles: function() {
@@ -44,12 +44,12 @@ async function getByIds(ids = {}) {
     .select();
 }
 
-Apps = base.Collection.extend({
+Apps = Base.Collection.extend({
   model: App
 });
 
 module.exports = {
   tableName,
-  App: base.model('App', App),
-  Apps: base.collection('Apps', Apps)
+  App: Base.model('App', App),
+  Apps: Base.collection('Apps', Apps)
 };

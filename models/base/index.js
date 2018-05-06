@@ -1,10 +1,12 @@
 'use strict';
 
 const bookshelf = require('bookshelf');
+const uuidv4 = require('uuid/v4');
 
 const { connection } = require('../db');
 
 const Bookshelf = bookshelf(connection);
+Bookshelf.plugin('registry');
 
 Bookshelf.Model = Bookshelf.Model.extend({
   // Bookshelf `hasTimestamps` - handles created_at and updated_at properties
@@ -17,34 +19,37 @@ Bookshelf.Model = Bookshelf.Model.extend({
     this.on('creating', this.onCreating);
     this.on('created', this.onCreated)
     this.on('updating', this.onUpdating);
-    this.on('updated', this.onCreated)
+    this.on('updated', this.onUpdated)
   },
 
   onSaving: function onSaving(newObj, attrs, options) {
-    console.log('On Saving', newObj);
+    console.log('On Saving');
   },
 
   onFetching: function onFetching(model, columns, options) {
-    console.log('On fetching', model);
+    console.log('On fetching');
   },
 
   onCreating: function onSaving(newObj, attr, options) {
-    console.log('On Creating', newObj);
+    console.log('On Creating');
+    if (options.importing) {
+      this.set('created_by', Bookshelf.Model.internalUser);
+    }
   },
 
   onCreated: function onSaving(newObj, newId, options) {
-    console.log('On Created', newObj);
+    console.log('On Created');
   },
 
   onUpdating: function onSaving(newObj, attr, options) {
-    console.log('On Updating', newObj);
+    console.log('On Updating');
   },
 
   onUpdated: function onSaving(newObj, affectedRows, options) {
-    console.log('On Updated', newObj);
+    console.log('On Updated');
   },
 }, {
-
+  internalUser: 1,
   /**
    * Select a collection based on a query
    * @param {Object} [query]
@@ -83,6 +88,12 @@ Bookshelf.Model = Bookshelf.Model.extend({
    * @return {Promise(bookshelf.Model)}
    */
   create: async function (data, options) {
+    options = options || {};
+    if (!data.uid) {
+      data.uid = uuidv4();
+    }
+    //https://stackoverflow.com/a/31449937
+    options.method = 'insert';
     return this.forge(data).save(null, options);
   },
 

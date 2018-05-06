@@ -2,7 +2,7 @@
 
 const joi = require('joi');
 
-const base = require('../base');
+const Base = require('../base');
 const { App } = require('../app');
 const { User } = require('../user');
 const tableName = 'roles';
@@ -17,7 +17,7 @@ const roleSchema = joi
   .unknown()
   .required();
 
-const Role = base.Model.extend({
+const Role = Base.Model.extend({
   tableName,
 
   app: function () {
