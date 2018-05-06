@@ -3,6 +3,7 @@ module.exports = {
     uid: { type: 'string', nullable: false, primary: true },
     name: { type: 'string', nullable: false, unique: true },
     slug: { type: 'string', nullable: false, unique: true },
+    secret: { type: 'string', nullable: false },
     status: {
       type: 'string',
       maxlength: 50,

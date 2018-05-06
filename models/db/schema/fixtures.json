@@ -1,6 +1,23 @@
 {
     "models": [
       {
+        "name": "App",
+        "entries": [
+          {
+            "name": "Demo App",
+            "secret": "demo",
+            "slug": "demo-app",
+            "status": "enabled"
+          },
+          {
+            "name": "Bar App",
+            "secret": "bar",
+            "slug": "bar-app",
+            "status": "enabled"
+          }
+        ]
+      },
+      {
         "name": "Role",
         "entries": [
           {
