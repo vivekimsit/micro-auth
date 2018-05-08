@@ -2,12 +2,21 @@ module.exports = {
   apps: {
     uid: { type: 'string', nullable: false, primary: true },
     name: { type: 'string', nullable: false, unique: true },
+    description: { type: 'string', maxlength: 2000, nullable: true },
     slug: { type: 'string', nullable: false, unique: true },
+    logo: { type: 'string', maxlength: 2000, nullable: true },
+    secret: { type: 'string', nullable: false },
     status: {
       type: 'string',
       maxlength: 50,
       nullable: false,
       defaultTo: 'inactive',
+    },
+    type: {
+      type: 'string',
+      maxlength: 50,
+      nullable: false,
+      defaultTo: 'web',
     },
     created_at: { type: 'dateTime', nullable: false },
     updated_at: { type: 'dateTime', nullable: true },
@@ -24,10 +33,8 @@ module.exports = {
     },
     firstname: { type: 'string', nullable: true },
     lastname: { type: 'string', nullable: true },
-    lastname: { type: 'string', nullable: true },
     locale: { type: 'string', maxlength: 6, nullable: true },
     password: { type: 'string', maxlength: 128, nullable: false },
-    phone: { type: 'string', nullable: true },
     status: {
       type: 'string',
       maxlength: 50,
@@ -43,6 +50,7 @@ module.exports = {
     uid: { type: 'string', nullable: false, primary: true },
     name: { type: 'string', maxlength: 50, nullable: false, unique: true },
     description: { type: 'string', maxlength: 2000, nullable: true },
+    app_id: { type: 'string', nullable: false, references: 'apps.id' },
     updated_at: { type: 'dateTime', nullable: true },
     created_at: { type: 'dateTime', nullable: false },
     created_by: { type: 'string', nullable: false },
@@ -51,28 +59,23 @@ module.exports = {
   permissions: {
     uid: { type: 'string', nullable: false, primary: true },
     name: { type: 'string', maxlength: 50, nullable: false, unique: true },
-    object_type: { type: 'string', maxlength: 50, nullable: false },
-    action_type: { type: 'string', maxlength: 50, nullable: false },
-    object_id: { type: 'string', maxlength: 24, nullable: true },
+    object: { type: 'string', maxlength: 50, nullable: false },
+    action: { type: 'string', maxlength: 50, nullable: false },
     created_at: { type: 'dateTime', nullable: false },
     updated_at: { type: 'dateTime', nullable: true },
     created_by: { type: 'string', nullable: false },
     updated_by: { type: 'string', nullable: true },
   },
+  apps_users: {
+    app_id: { type: 'string', nullable: false },
+    user_id: { type: 'string', nullable: false },
+  },
   roles_users: {
     role_id: { type: 'string', nullable: false },
     user_id: { type: 'string', nullable: false },
   },
-  permissions_users: {
-    user_id: { type: 'string', nullable: false },
-    permission_id: { type: 'string', nullable: false },
-  },
   permissions_roles: {
     role_id: { type: 'string', nullable: false },
-    permission_id: { type: 'string', nullable: false },
-  },
-  permissions_apps: {
-    app_id: { type: 'string', nullable: false },
     permission_id: { type: 'string', nullable: false },
   },
 };

@@ -1,15 +1,89 @@
 {
     "models": [
       {
-        "name": "role",
+        "name": "App",
+        "entries": [
+          {
+            "uid": "1",
+            "name": "Demo App",
+            "secret": "demo",
+            "slug": "demo-app",
+            "status": "enabled"
+          },
+          {
+            "uid": "2",
+            "name": "Bar App",
+            "secret": "bar",
+            "slug": "bar-app",
+            "status": "enabled"
+          }
+        ]
+      },
+      {
+        "name": "User",
+        "entries": [
+          {
+            "uid": 1,
+            "email": "admin@example.com",
+            "firstname": "admin",
+            "lastname": "",
+            "status": "active",
+            "locale": "en_US",
+            "password": "$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG"
+          },
+          {
+            "uid": 2,
+            "email": "demo@example.com",
+            "firstname": "demo",
+            "lastname": "",
+            "status": "active",
+            "locale": "en_US",
+            "password": "$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG"
+          }
+        ]
+      },
+      {
+        "name": "Role",
         "entries": [
           {
             "name": "Administrator",
-            "description": "Administrators"
+            "description": "Administrators",
+            "app_id": "1"
           },
           {
             "name": "Owner",
-            "description": "Hotel Owner"
+            "description": "Hotel Owner",
+            "app_id": "1"
+          }
+        ]
+      },
+      {
+        "name": "Permission",
+        "entries": [
+          {
+            "name": "Browse hotel",
+            "action": "browse",
+            "object": "hotel"
+          },
+          {
+            "name": "Read hotel",
+            "action": "read",
+            "object": "hotel"
+          },
+          {
+            "name": "Edit hotel",
+            "action": "edit",
+            "object": "hotel"
+          },
+          {
+            "name": "Add hotel",
+            "action": "add",
+            "object": "hotel"
+          },
+          {
+            "name": "Delete hotel",
+            "action": "destroy",
+            "object": "hotel"
           }
         ]
       }

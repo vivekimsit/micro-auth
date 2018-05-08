@@ -1,44 +1,59 @@
 'use strict';
 
 const joi = require('joi');
+const pick = require('lodash/pick');
+const uuidv4 = require('uuid/v4');
 
-const { connection } = require('../db');
-
+const Base = require('../base');
+const { App } = require('../app');
+const { Role } = require('../role');
 const tableName = 'users';
 
 const userSchema = joi
   .object({
     uid: joi.string().required(),
-    salt: joi.string().required(),
     email: joi.string().required(),
-    phone: joi.string(),
-    device: joi.string(),
     firstname: joi.string().required(),
     lastname: joi.string().required(),
-    language: joi.string().default('en-US'),
+    locale: joi.string().default('en-US'),
     password: joi.string().required(),
-    username: joi.string().required(),
-    is_active: joi.boolean().default(true),
+    phone: joi.string(),
+    status: joi.string().default('active'),
   })
   .unknown()
   .required();
 
-async function addUser(user) {
-  // eslint-disable-next-line no-param-reassign
-  user = joi.attempt(user, userSchema);
-  return connection(tableName)
-    .insert(user)
-    .returning('*');
-}
+let User, Users;
 
-async function getUsers(params = {}) {
-  return connection(tableName)
-    .where(params)
-    .select();
-}
+User = Base.Model.extend({
+  tableName,
+
+  defaults: function defaults() {
+    return {
+      uid: uuidv4(),
+    };
+  },
+
+  apps: function() {
+    return this.belongsToMany(App);
+  },
+
+  roles: function() {
+    return this.belongsToMany(Role);
+  },
+
+  toJson: function() {
+    const fields = ['uid', 'email', 'firstname', 'lastname', 'locale'];
+    return pick(this, fields);
+  },
+});
+
+Users = Base.Collection.extend({
+  model: User,
+});
 
 module.exports = {
   tableName,
-  addUser,
-  getUsers,
+  User: Base.model('User', User),
+  Users: Base.collection('Users', Users),
 };

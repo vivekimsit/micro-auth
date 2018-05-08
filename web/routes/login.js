@@ -5,7 +5,7 @@ const boom = require('boom');
 const joi = require('joi');
 const pick = require('lodash/pick');
 
-const userModel = require('../../models/user');
+const { User } = require('../../models/user');
 
 const loginSchema = joi
   .object({
@@ -15,6 +15,7 @@ const loginSchema = joi
       .required(),
     password: joi.string().required(),
   })
+  .unknown()
   .required();
 
 async function run(req, res, next) {
@@ -27,29 +28,16 @@ async function run(req, res, next) {
 }
 
 async function authorize({ email, password }) {
-  const users = await userModel.getUsers({ email, is_active: true });
-
   let isAuthorized = false;
-  // eslint-disable-next-line no-unused-vars
-  const [user, ...rest] = users;
+  const user = await User.findOne({ email, status: 'active' });
   if (user) {
-    isAuthorized = await bcrypt.compare(password, user.password);
+    isAuthorized = await bcrypt.compare(password, user.get('password'));
   }
   return { isAuthorized, user };
 }
 
 async function successResponse(user, res) {
-  const publicFields = [
-    'uid',
-    'username',
-    'email',
-    'firstname',
-    'lastname',
-    'language',
-  ];
-  // eslint-disable-next-line no-param-reassign
-  user = pick(user, publicFields);
-  res.status(200).send(pick(user, publicFields));
+  res.status(200).json(user.toJSON());
 }
 
 module.exports = run;

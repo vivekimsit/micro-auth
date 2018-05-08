@@ -5,20 +5,22 @@ const uuidv4 = require('uuid/v4');
 
 const Base = require('../base');
 const { App } = require('../app');
-const { User } = require('../user');
-const tableName = 'roles';
+const { Role } = require('../role');
 
-const roleSchema = joi
+const tableName = 'permissions';
+
+const permissionSchema = joi
   .object({
     uid: joi.string().required(),
     app_id: joi.string().required(),
     name: joi.string().required(),
-    description: joi.string(),
+    object: joi.string().required(),
+    action: joi.string().required(),
   })
   .unknown()
   .required();
 
-const Role = Base.Model.extend({
+const Permission = Base.Model.extend({
   tableName,
 
   defaults: function defaults() {
@@ -31,16 +33,12 @@ const Role = Base.Model.extend({
     return this.belongsTo(App);
   },
 
-  permissions: function() {
-    return this.belongsToMany(App);
-  },
-
-  users: function() {
-    return this.belongsToMany(User);
+  roles: function() {
+    return this.belongsToMany(Role);
   },
 });
 
 module.exports = {
   tableName,
-  Role: Base.model('Role', Role),
+  Permission: Base.model('Permission', Permission),
 };
