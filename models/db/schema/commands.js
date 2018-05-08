@@ -26,6 +26,9 @@ function addTableColumn(tableName, table, columnName) {
   if (columnSpec.hasOwnProperty('primary') && columnSpec.primary === true) {
     column.primary();
   }
+  if (columnSpec.hasOwnProperty('references')) {
+    column.references(columnSpec.references);
+  }
   if (columnSpec.hasOwnProperty('unique') && columnSpec.unique) {
     column.unique();
   }

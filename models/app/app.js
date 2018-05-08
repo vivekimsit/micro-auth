@@ -1,17 +1,26 @@
 'use strict';
 
 const joi = require('joi');
+const uuidv4 = require('uuid/v4');
 
 const Base = require('../base');
-const Role = require('../role');
+const { Permission } = require('../permission');
+const { Role } = require('../role');
+const { User } = require('../user');
+
 const tableName = 'apps';
 
 const appSchema = joi
   .object({
     uid: joi.string().required(),
     name: joi.string().required(),
+    slug: joi.string().required(),
+    logo: joi.string(),
     secret: joi.string().required(),
+    status: joi.string().default('active'),
+    type: joi.string().default('web'),
   })
+  .unknown()
   .required();
 
 let App, Apps;
@@ -19,30 +28,30 @@ let App, Apps;
 App = Base.Model.extend({
   tableName,
 
+  defaults: function defaults() {
+    return {
+      uid: uuidv4(),
+      type: 'web',
+    };
+  },
+
+  onCreating: function onCreating(newObj, attr, options) {
+    Base.Model.prototype.onCreating.apply(this, arguments);
+    joi.attempt(this.changed, appSchema);
+  },
+
   roles: function() {
     return this.hasMany(Role);
   },
+
+  permissions: function() {
+    return this.hasMany(Permission);
+  },
+
+  users: function() {
+    return this.belongsToMany(User);
+  },
 });
-
-async function addApp(app) {
-  // eslint-disable-next-line no-param-reassign
-  app = joi.attempt(app, appSchema);
-  return connection(tableName)
-    .insert(app)
-    .returning('*');
-}
-
-async function getApps(params = {}) {
-  return connection(tableName)
-    .where(params)
-    .select();
-}
-
-async function getByIds(ids = {}) {
-  return connection(tableName)
-    .whereIn('uid', ids)
-    .select();
-}
 
 Apps = Base.Collection.extend({
   model: App,

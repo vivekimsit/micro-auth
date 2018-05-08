@@ -31,22 +31,22 @@ Bookshelf.Model = Bookshelf.Model.extend(
       console.log('On fetching');
     },
 
-    onCreating: function onSaving(newObj, attr, options) {
+    onCreating: function onCreating(newObj, attr, options) {
       console.log('On Creating');
       if (options.importing) {
         this.set('created_by', Bookshelf.Model.internalUser);
       }
     },
 
-    onCreated: function onSaving(newObj, newId, options) {
+    onCreated: function onCreated(newObj, newId, options) {
       console.log('On Created');
     },
 
-    onUpdating: function onSaving(newObj, attr, options) {
+    onUpdating: function onUpdating(newObj, attr, options) {
       console.log('On Updating');
     },
 
-    onUpdated: function onSaving(newObj, affectedRows, options) {
+    onUpdated: function onUpdated(newObj, affectedRows, options) {
       console.log('On Updated');
     },
   },
@@ -93,9 +93,6 @@ Bookshelf.Model = Bookshelf.Model.extend(
      */
     create: async function(data, options) {
       options = options || {};
-      if (!data.uid) {
-        data.uid = uuidv4();
-      }
       //https://stackoverflow.com/a/31449937
       options.method = 'insert';
       return this.forge(data).save(null, options);
