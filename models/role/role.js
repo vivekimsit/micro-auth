@@ -4,8 +4,11 @@ const joi = require('joi');
 const uuidv4 = require('uuid/v4');
 
 const Base = require('../base');
-const { App } = require('../app');
-const { User } = require('../user');
+
+require('../app');
+require('../permission');
+require('../user');
+
 const tableName = 'roles';
 
 const roleSchema = joi
@@ -28,15 +31,15 @@ const Role = Base.Model.extend({
   },
 
   app: function() {
-    return this.belongsTo(App);
+    return this.belongsTo('App');
   },
 
   permissions: function() {
-    return this.belongsToMany(App);
+    return this.belongsToMany('Permission');
   },
 
   users: function() {
-    return this.belongsToMany(User);
+    return this.belongsToMany('User');
   },
 });
 

@@ -2,6 +2,7 @@
 
 const Promise = require('bluebird');
 const _ = require('lodash');
+const uuidv4 = require('uuid/v4');
 
 const fixtures = require('../../schema/fixtures');
 const logger = require('../../../../web/lib/logger');
@@ -11,18 +12,17 @@ module.exports.config = {
   transaction: true,
 };
 
-module.exports.up = function insertFixtures({ connection }) {
-  return Promise.mapSeries(fixtures.models, function(model) {
+module.exports.up = async function insertFixtures({ connection }) {
+  const { models, relations } = fixtures;
+  await Promise.mapSeries(models, model => {
     logger.info('Model: ' + model.name);
-
     return addFixturesForModel(model);
-  }).then(function() {
-    return Promise.mapSeries(fixtures.relations || [], function(relation) {
-      logger.info(
-        'Relation: ' + relation.from.model + ' to ' + relation.to.model
-      );
-      //return addFixturesForRelation(relation);
-    });
+  });
+  await Promise.mapSeries(relations || [], relation => {
+    logger.info(
+      'Relation: ' + relation.from.model + ' to ' + relation.to.model
+    );
+    return addFixturesForRelation(relation);
   });
 };
 
@@ -67,8 +67,7 @@ function addFixturesForModel(modelFixture, options) {
  *
  */
 async function addFixturesForRelation(relationFixture, options) {
-  var ops = [],
-    max = 0;
+  const ops = [];
   const { from, to, entries } = relationFixture;
   const { relation } = from;
 
@@ -76,30 +75,35 @@ async function addFixturesForRelation(relationFixture, options) {
   const data = await fetchRelationData(relationFixture, options);
   const { fromValues, toValues } = data;
 
+  let max = 0;
   _.each(entries, (entry, key) => {
     const fromItem = fromValues.find(
       matchFunc(relationFixture.from.match, key)
     );
-    logger.warn(
-      `Skip: Target database entry not found for model: ${
-        from.model
-      } key: ${key}`
-    );
-
+    if (!fromItem) {
+      logger.warn(
+        `Skip: Target database entry not found for model: ${
+          from.model
+        } key: ${key}`
+      );
+      return Promise.resolve();
+    }
     _.each(entry, (value, key) => {
-      const toItems = toValues.filter(
+      let toItems = toValues.filter(
         matchFunc(relationFixture.to.match, key, value)
       );
       max += toItems.length;
-      toItems = dedup(fromItem.related(relation), toItems, () =>
-        matchObj(to.match, item)
-      );
+      toItems = dedup(to.match, fromItem.related(relation), toItems);
 
-      for (const item of items) {
-        ops.push(function addRelationItems() {
-          return attach(from.model, fromItem.id, relation, toItems, options);
-        });
-      }
+      ops.push(function addRelationItems() {
+        return attach(
+          models[from.model],
+          fromItem.get('uid'),
+          relation,
+          toItems,
+          options
+        );
+      });
     });
   });
   const results = Promise.reduce(
@@ -107,29 +111,49 @@ async function addFixturesForRelation(relationFixture, options) {
     function(accumulator, task) {
       const result = task.apply(this);
       accumulator.push(result);
+      return accumulator;
     },
     []
   );
   return {
     expected: max,
-    done: _(result)
+    done: _(results)
       .map('length')
       .sum(),
   };
 }
 
-function dedup(fromItems, toItems, condition) {
-  return _.reject(toItems, item => fromItems.findWhere(condition()));
+function attach(Model, effectedModelId, relation, modelsToAttach, options) {
+  let fetchedModel;
+  options = options || {};
+
+  return Model.forge({ uid: effectedModelId })
+    .fetch(options)
+    .then(function successFetchedModel(_fetchedModel) {
+      fetchedModel = _fetchedModel;
+      if (!fetchedModel) {
+        throw new Error({ level: 'critical', help: effectedModelId });
+      }
+
+      return Promise.resolve(modelsToAttach).then(function then(models) {
+        return fetchedModel.related(relation).attach(models);
+      });
+    });
+}
+
+function dedup(match, fromItems, toItems) {
+  return _.reject(toItems, item => fromItems.findWhere(matchObj(match, item)));
 }
 
 async function fetchRelationData({ from, to }, options) {
+  options = options || {};
   const fromOptions = Object.assign({}, options, {
     withRelated: [from.relation],
   });
 
   return Promise.props({
-    from: models[from.model].findAll(fromOptions),
-    to: models[to.model].findAll(options),
+    fromValues: models[from.model].fetchAll(fromOptions),
+    toValues: models[to.model].findAll(options),
   });
 }
 
@@ -141,11 +165,11 @@ async function fetchRelationData({ from, to }, options) {
  * @return {Function} The predicate function.
  */
 function matchFunc(match, key, value) {
-  if (Arrays.isArray(match)) {
+  if (_.isArray(match)) {
     return item => {
       var valueTest = true;
 
-      if (Arrays.isArray(value)) {
+      if (_.isArray(value)) {
         valueTest = value.indexOf(item.get(match[1])) > -1;
       } else if (value !== 'all') {
         valueTest = item.get(match[1]) === value;
@@ -163,12 +187,13 @@ function matchFunc(match, key, value) {
 
 function matchObj(match, item) {
   var matchObj = {};
-  if (Arrays.isArray(match)) {
+  if (_.isArray(match)) {
     _.each(match, function(matchProp) {
       matchObj[matchProp] = item.get(matchProp);
     });
   } else {
     matchObj[match] = item.get(match);
   }
+  console.log(matchObj);
   return matchObj;
 }

@@ -23,7 +23,7 @@
         "name": "User",
         "entries": [
           {
-            "uid": 1,
+            "uid": "1",
             "email": "admin@example.com",
             "firstname": "admin",
             "lastname": "",
@@ -32,7 +32,7 @@
             "password": "$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG"
           },
           {
-            "uid": 2,
+            "uid": "2",
             "email": "demo@example.com",
             "firstname": "demo",
             "lastname": "",
@@ -53,6 +53,11 @@
           {
             "name": "Owner",
             "description": "Hotel Owner",
+            "app_id": "1"
+          },
+          {
+            "name": "Employee",
+            "description": "Hotel Employee",
             "app_id": "1"
           }
         ]
@@ -86,6 +91,30 @@
             "object": "hotel"
           }
         ]
+      }
+    ],
+    "relations": [
+      {
+        "from": {
+          "model": "Role",
+          "match": "name",
+          "relation": "permissions"
+        },
+        "to": {
+          "model": "Permission",
+          "match": ["object", "action"]
+        },
+        "entries": {
+          "Administrator": {
+            "hotel": ["browse", "read", "edit", "destory"]
+          },
+          "Owner": {
+            "hotel": "all"
+          },
+          "Employee": {
+            "hotel": ["browse", "read", "edit"]
+          }
+        }
       }
     ]
 }

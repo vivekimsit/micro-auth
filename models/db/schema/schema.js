@@ -50,7 +50,7 @@ module.exports = {
     uid: { type: 'string', nullable: false, primary: true },
     name: { type: 'string', maxlength: 50, nullable: false, unique: true },
     description: { type: 'string', maxlength: 2000, nullable: true },
-    app_id: { type: 'string', nullable: false, references: 'apps.id' },
+    app_id: { type: 'string', nullable: false, references: 'apps.uid' },
     updated_at: { type: 'dateTime', nullable: true },
     created_at: { type: 'dateTime', nullable: false },
     created_by: { type: 'string', nullable: false },
@@ -67,15 +67,15 @@ module.exports = {
     updated_by: { type: 'string', nullable: true },
   },
   apps_users: {
-    app_id: { type: 'string', nullable: false },
-    user_id: { type: 'string', nullable: false },
+    app_uid: { type: 'string', nullable: false },
+    user_uid: { type: 'string', nullable: false },
   },
   roles_users: {
-    role_id: { type: 'string', nullable: false },
-    user_id: { type: 'string', nullable: false },
+    role_uid: { type: 'string', nullable: false },
+    user_uid: { type: 'string', nullable: false },
   },
   permissions_roles: {
-    role_id: { type: 'string', nullable: false },
-    permission_id: { type: 'string', nullable: false },
+    role_uid: { type: 'string', nullable: false },
+    permission_uid: { type: 'string', nullable: false },
   },
 };
