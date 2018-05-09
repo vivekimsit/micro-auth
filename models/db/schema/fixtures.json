@@ -115,6 +115,21 @@
             "hotel": ["browse", "read", "edit"]
           }
         }
+      },
+      {
+        "from": {
+          "model": "User",
+          "match": "uid",
+          "relation": "roles"
+        },
+        "to": {
+          "model": "Role",
+          "match": "name"
+        },
+        "entries": {
+          "1": ["Administrator"],
+          "2": ["Employee"]
+        }
       }
     ]
 }

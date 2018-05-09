@@ -194,6 +194,5 @@ function matchObj(match, item) {
   } else {
     matchObj[match] = item.get(match);
   }
-  console.log(matchObj);
   return matchObj;
 }

@@ -5,8 +5,10 @@ const pick = require('lodash/pick');
 const uuidv4 = require('uuid/v4');
 
 const Base = require('../base');
-const { App } = require('../app');
-const { Role } = require('../role');
+
+require('../app');
+require('../role');
+
 const tableName = 'users';
 
 const userSchema = joi
@@ -35,11 +37,11 @@ User = Base.Model.extend({
   },
 
   apps: function() {
-    return this.belongsToMany(App);
+    return this.belongsToMany('App');
   },
 
   roles: function() {
-    return this.belongsToMany(Role);
+    return this.belongsToMany('Role');
   },
 
   toJson: function() {
