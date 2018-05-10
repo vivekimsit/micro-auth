@@ -54,7 +54,7 @@ describe('POST /account/applogin', () => {
         expect(jsonResponse.permissions).to.deep.equal([
           permissions[0],
           permissions[1],
-          permissions[2]
+          permissions[2],
         ]);
       });
   });

@@ -42,10 +42,9 @@ async function run(req, res, next) {
   if (!apps.length) {
     return next(boom.unauthorized('User is not authorised for this app.'));
   }
-  const items = user.related('roles').toJSON();
   let permissions = [];
-  items.forEach(item => {
-    permissions = permissions.concat(item.permissions);
+  roles.forEach(role => {
+    permissions = permissions.concat(role.permissions);
   });
   return successResponse(user, roles, permissions, secret, res);
 }
@@ -62,7 +61,10 @@ async function getApp(name) {
 }
 
 async function authorize({ email, password }) {
-  const user = await User.findOne({ email, status: 'active' }, { withRelated: ['roles.permissions'] });
+  const user = await User.findOne(
+    { email, status: 'active' },
+    { withRelated: ['roles.permissions'] }
+  );
 
   let isAuthorized = false;
   if (user) {
@@ -72,7 +74,7 @@ async function authorize({ email, password }) {
 }
 
 async function getUserRoles(user) {
-  return user.roles().fetch();
+  return user.related('roles').toJSON();
 }
 
 async function getUserApps(user) {
@@ -96,9 +98,11 @@ async function successResponse(user, roles, permissions, secret, res) {
   // eslint-disable-next-line no-param-reassign
   user = pick(user, userFields);
   // eslint-disable-next-line no-param-reassign
-  roles = roles.toJSON().map(role => pick(role, roleFields));
+  roles = roles.map(role => pick(role, roleFields));
   // eslint-disable-next-line no-param-reassign
-  permissions = permissions.map(permission => pick(permission, ['name', 'object', 'action']));
+  permissions = permissions.map(permission =>
+    pick(permission, ['name', 'object', 'action'])
+  );
   return res.json({ expiration, token, ...user, roles, permissions });
 }
 
