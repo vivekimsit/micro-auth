@@ -22,7 +22,7 @@ describe('POST /account/applogin', () => {
   });
 
   it('should authenticate', async () => {
-    const [ user, ...rest ] = users;
+    const [user, ...rest] = users;
 
     const payload = {
       email: user.email,
@@ -37,9 +37,7 @@ describe('POST /account/applogin', () => {
       .expect('Content-Type', /json/)
       .expect('Cache-Control', 'no-store') // turn off caching
       .expect(400)
-      .end((err, res) => {
-
-      });
+      .end((err, res) => {});
   });
 
   it('should fail for invalid appname', async () => {
@@ -57,9 +55,7 @@ describe('POST /account/applogin', () => {
       .expect('Content-Type', /json/)
       .expect('Cache-Control', 'no-store') // turn off caching
       .expect(400)
-      .end((err, res) => {
-      
-      });
+      .end((err, res) => {});
 
     expect(getApps).to.be.calledOnce;
   });
@@ -107,9 +103,7 @@ describe('POST /account/applogin', () => {
       .form(payload)
       .expect('Content-Type', /json/)
       .expect(401)
-      .end((err, res) => {
-      
-      });
+      .end((err, res) => {});
 
     expect(getApps).to.be.calledOnce;
     expect(getByIds).to.be.calledOnce;

@@ -11,8 +11,8 @@
     "rollback-db": "node ./scripts/rollback",
     "seed-db": "node ./scripts/seed-db",
     "prettier": "prettier --write \"{models,web}/**/*.js\"",
-    "test-unit": "mocha ./test/setup.js ./**/*.unit.spec.js",
-    "test-unit-dev": "mocha --watch ./test/setup.js ./**/*unit.spec.js",
+    "test-unit": "cross-env NODE_ENV=test mocha ./test/setup.js ./**/*.unit.spec.js",
+    "test-unit-dev": "cross-env NODE_ENV=test mocha --watch ./test/setup.js ./**/*unit.spec.js",
     "test-e2e": "cross-env NODE_ENV=test mocha ./test/setup.js ./**/*.e2e.spec.js",
     "test": "npm run test-unit && npm run test-e2e"
   },
@@ -34,6 +34,7 @@
     "lodash": "^4.17.5",
     "moment": "^2.20.1",
     "mysql": "^2.15.0",
+    "sqlite3": "^4.0.0",
     "uuid": "^3.2.1",
     "winston": "^3.0.0-rc1"
   },

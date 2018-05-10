@@ -13,6 +13,22 @@ const schema = joi
     DB_USER: joi.string().required(),
     DB_NAME: joi.string().required(),
     DB_PASSWORD: joi.string().allow(''),
+    DB_DEBUG: joi.boolean().default(false),
+    DB_CLIENT: joi
+      .string()
+      .allow(['mysql', 'sqlite3'])
+      .when('NODE_ENV', {
+        is: 'development',
+        then: joi.default('mysql'),
+      })
+      .when('NODE_ENV', {
+        is: 'production',
+        then: joi.default('mysql'),
+      })
+      .when('NODE_ENV', {
+        is: 'test',
+        then: joi.default('sqlite3'),
+      }),
   })
   .unknown()
   .required();
@@ -23,25 +39,29 @@ if (error) {
   throw new Error(`Config validation error: ${error.message}`);
 }
 
-const migrations = {
-  directory: path.join(__dirname, './migrations'),
-};
+if (value.DB_CLIENT === 'sqlite3') {
+  exports = {
+    client: value.DB_CLIENT,
+    connection: {
+      filename: 'content/data/ma-test.db',
+    },
+    useNullAsDefault: true,
+    debug: value.DEBUG,
+  };
+} else {
+  exports = {
+    client: value.DB_CLIENT,
+    connection: {
+      host: value.DB_HOST,
+      port: value.DB_PORT,
+      user: value.DB_USER,
+      password: value.DB_PASSWORD,
+      database: value.DB_NAME,
+      multipleStatements: true,
+    },
+    pool: { min: 1, max: 10 },
+    debug: value.DEBUG,
+  };
+}
 
-const seeds = {
-  directory: path.join(__dirname, './seeds/dev'),
-};
-
-module.exports = {
-  client: 'mysql',
-  connection: {
-    host: value.DB_HOST,
-    port: value.DB_PORT,
-    user: value.DB_USER,
-    password: value.DB_PASSWORD,
-    database: value.DB_NAME,
-    multipleStatements: true,
-  },
-  migrations,
-  seeds,
-  pool: { min: 1, max: 10 },
-};
+module.exports = exports;
