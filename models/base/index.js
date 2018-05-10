@@ -24,30 +24,30 @@ Bookshelf.Model = Bookshelf.Model.extend(
     },
 
     onSaving: function onSaving(newObj, attrs, options) {
-      console.log('On Saving');
+      //console.log('On Saving');
     },
 
     onFetching: function onFetching(model, columns, options) {
-      console.log('On fetching');
+      //console.log('On fetching');
     },
 
     onCreating: function onCreating(newObj, attr, options) {
-      console.log('On Creating');
+      //console.log('On Creating');
       if (options.importing) {
         this.set('created_by', Bookshelf.Model.internalUser);
       }
     },
 
     onCreated: function onCreated(newObj, newId, options) {
-      console.log('On Created');
+      //console.log('On Created');
     },
 
     onUpdating: function onUpdating(newObj, attr, options) {
-      console.log('On Updating');
+      //console.log('On Updating');
     },
 
     onUpdated: function onUpdated(newObj, affectedRows, options) {
-      console.log('On Updated');
+      //console.log('On Updated');
     },
   },
   {

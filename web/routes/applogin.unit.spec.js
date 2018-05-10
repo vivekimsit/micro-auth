@@ -9,32 +9,32 @@ const appModel = require('../../models/app');
 const roleModel = require('../../models/role');
 const userModel = require('../../models/user');
 const server = require('../server');
-const { users } = require('../../test/fixtures');
+const { apps, users, roles, permissions } = require('../../test/fixtures');
 
 const knexMigrator = new KnexMigrator();
 
 describe('POST /account/applogin', () => {
   let sandbox;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await knexMigrator.reset({ force: true });
+    await knexMigrator.init();
+
     sandbox = sinon.sandbox.create();
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    await knexMigrator.reset({ force: true });
+
     sandbox.restore();
   });
 
   it('should authenticate', async () => {
-    const [user, ...rest] = users;
-
     const payload = {
-      email: user.email,
-      password: user.password,
-      appname: 'demo',
+      email: users[0].email,
+      password: users[0].password,
+      appname: apps[0].name,
     };
-
-    await knexMigrator.reset({ force: true });
-    await knexMigrator.init();
 
     await request(server)
       .post('/account/applogin')
@@ -43,19 +43,24 @@ describe('POST /account/applogin', () => {
       .expect('Content-Type', /json/)
       .expect('Cache-Control', 'no-store') // turn off caching
       .expect(200)
-      .end((err, res) => {});
+      .end((err, res) => {
+        const jsonResponse = JSON.parse(res.body);
+        expect(jsonResponse).to.have.own.property('expiration');
+        expect(jsonResponse).to.have.own.property('token');
+        expect(jsonResponse.roles).to.deep.equal([roles[0]]);
+      });
   });
 
-  xit('should fail for invalid appname', async () => {
+  it('should fail for unknown appname', async () => {
     const payload = {
-      email: 'demo@example.com',
-      appname: 'example',
-      password: 'demo',
+      email: users[0].email,
+      password: users[0].password,
+      appname: 'invalid',
     };
 
     await request(server)
       .post('/account/applogin')
-      .set('Accept', 'application/json')
+      .json()
       .form(payload)
       .expect('Content-Type', /json/)
       .expect('Cache-Control', 'no-store') // turn off caching
@@ -63,105 +68,37 @@ describe('POST /account/applogin', () => {
       .end((err, res) => {});
   });
 
-  xit('should fail for invalid app permissions', async () => {
+  it('should fail for unknown user', async () => {
     const payload = {
-      email: 'demo@example.com',
-      appname: 'demo',
-      password: 'demo',
+      email: 'invalid@example.com',
+      password: users[0].password,
+      appname: apps[0].name,
     };
-    const users = [
-      {
-        uid: '1',
-        username: 'demo',
-        firstname: 'foo',
-        lastname: 'bar',
-        email: 'demo@example.com',
-        language: 'en-US',
-        password:
-          '$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG',
-      },
-    ];
-    const apps = [
-      {
-        uid: '2',
-        name: 'bar',
-        secret: 'bar',
-      },
-    ];
-    const roles = [
-      {
-        uid: '1',
-        app_id: '2',
-        name: 'user',
-        description: 'App User',
-      },
-    ];
-    const getApps = sandbox.stub(appModel, 'getApps').returns(apps);
-    const getByIds = sandbox.stub(appModel, 'getByIds').returns(apps);
-    const getUsers = sandbox.stub(userModel, 'getUsers').returns(users);
-    const getUserRoles = sandbox.stub(roleModel, 'getUserRoles').returns(roles);
 
     await request(server)
       .post('/account/applogin')
+      .json()
       .form(payload)
       .expect('Content-Type', /json/)
-      .expect(401)
+      .expect('Cache-Control', 'no-store') // turn off caching
+      .expect(404)
       .end((err, res) => {});
-
-    expect(getApps).to.be.calledOnce;
-    expect(getByIds).to.be.calledOnce;
-    expect(getUsers).to.be.calledOnce;
-    expect(getUserRoles).to.be.calledOnce;
   });
 
-  xit('should pass for valid app permissions', async () => {
+  it('should fail for invalid user password', async () => {
     const payload = {
-      email: 'demo@example.com',
-      appname: 'demo',
-      password: 'demo',
+      email: users[0].email,
+      password: 'invalid',
+      appname: apps[0].name,
     };
-    const users = [
-      {
-        uid: '1',
-        username: 'demo',
-        firstname: 'foo',
-        lastname: 'bar',
-        email: 'demo@example.com',
-        language: 'en-US',
-        password:
-          '$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG',
-      },
-    ];
-    const apps = [
-      {
-        uid: '1',
-        name: 'demo',
-        secret: 'demo',
-      },
-    ];
-    const roles = [
-      {
-        uid: '1',
-        app_id: '1',
-        name: 'user',
-        description: 'App User',
-      },
-    ];
-    const getApps = sandbox.stub(appModel, 'getApps').returns(apps);
-    const getByIds = sandbox.stub(appModel, 'getByIds').returns(apps);
-    const getUsers = sandbox.stub(userModel, 'getUsers').returns(users);
-    const getUserRoles = sandbox.stub(roleModel, 'getUserRoles').returns(roles);
 
     await request(server)
       .post('/account/applogin')
+      .json()
       .form(payload)
       .expect('Content-Type', /json/)
-      .expect(200)
-      .end();
-
-    expect(getApps).to.be.calledOnce;
-    expect(getByIds).to.be.calledOnce;
-    expect(getUsers).to.be.calledOnce;
-    expect(getUserRoles).to.be.calledOnce;
+      .expect('Cache-Control', 'no-store') // turn off caching
+      .expect(401)
+      .end((err, res) => {});
   });
 });

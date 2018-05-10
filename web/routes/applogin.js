@@ -23,12 +23,17 @@ async function run(req, res, next) {
   const { appname, email, password } = joi.attempt(req.body, loginSchema);
   const { exists, secret } = await getApp(appname);
   if (!exists) {
-    throw boom.badRequest(`Invalid app name ${appname}.`);
+    throw boom.badRequest(`Invalid app name: ${appname}.`);
   }
+
   const { isAuthorized, user } = await authorize({ email, password });
+  if (!user) {
+    return next(boom.notFound('User not found.'));
+  }
   if (!isAuthorized) {
     return next(boom.unauthorized('Invalid email or password.'));
   }
+
   const roles = await getUserRoles(user);
   if (!roles.length) {
     return next(boom.unauthorized('User does not have permission.'));
@@ -37,7 +42,7 @@ async function run(req, res, next) {
   if (!apps.length) {
     return next(boom.unauthorized('User is not authorised for this app.'));
   }
-  return successResponse(user, roles, secret, res);
+  return successResponse(user, roles.toJSON(), secret, res);
 }
 
 async function getApp(name) {
@@ -87,7 +92,7 @@ async function successResponse(user, roles, secret, res) {
   user = pick(user, userFields);
   // eslint-disable-next-line no-param-reassign
   roles = roles.map(role => pick(role, roleFields));
-  return res.status(200).json({ expiration, token, ...user, roles });
+  return res.json({ expiration, token, ...user, roles });
 }
 
 const getExpirationTime = () =>

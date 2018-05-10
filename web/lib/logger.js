@@ -24,7 +24,7 @@ const logger = createLogger({
 });
 
 // If we're not in production then log to the `console`
-if (config.env !== 'production') {
+if (config.env !== 'production' && config.env !== 'test') {
   logger.add(
     new transports.Console({
       format: combine(colorize(), customFormat),

@@ -26,7 +26,7 @@ const schema = joi
       })
       .when('NODE_ENV', {
         is: 'test',
-        then: joi.default('silly'),
+        then: joi.default('error'),
       }),
   })
   .unknown() // ignore unknown fields
