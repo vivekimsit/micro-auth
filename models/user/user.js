@@ -9,8 +9,6 @@ const Base = require('../base');
 require('../app');
 require('../role');
 
-const tableName = 'users';
-
 const userSchema = joi
   .object({
     uid: joi.string().required(),
@@ -28,7 +26,7 @@ const userSchema = joi
 let User, Users;
 
 User = Base.Model.extend({
-  tableName,
+  tableName: 'users',
 
   defaults: function defaults() {
     return {
@@ -55,7 +53,6 @@ Users = Base.Collection.extend({
 });
 
 module.exports = {
-  tableName,
   User: Base.model('User', User),
   Users: Base.collection('Users', Users),
 };

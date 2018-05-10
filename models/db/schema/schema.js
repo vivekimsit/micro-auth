@@ -59,6 +59,7 @@ module.exports = {
   permissions: {
     uid: { type: 'string', nullable: false, primary: true },
     name: { type: 'string', maxlength: 50, nullable: false, unique: true },
+    app_id: { type: 'string', nullable: false, references: 'apps.uid' },
     object: { type: 'string', maxlength: 50, nullable: false },
     action: { type: 'string', maxlength: 50, nullable: false },
     created_at: { type: 'dateTime', nullable: false },

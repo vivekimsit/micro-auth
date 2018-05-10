@@ -21,7 +21,7 @@ const permissionSchema = joi
   .required();
 
 const Permission = Base.Model.extend({
-  tableName,
+  tableName: 'permissions',
 
   defaults: function defaults() {
     return {
@@ -39,6 +39,5 @@ const Permission = Base.Model.extend({
 });
 
 module.exports = {
-  tableName,
   Permission: Base.model('Permission', Permission),
 };

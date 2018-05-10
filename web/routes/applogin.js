@@ -44,7 +44,7 @@ async function run(req, res, next) {
 async function getApp(name) {
   let exists = false;
   let secret = null;
-  const app = await Apps.findOne({ name });
+  const app = await App.findOne({ name });
   if (app) {
     exists = true;
     secret = app.get('secret');

@@ -9,8 +9,6 @@ require('../app');
 require('../permission');
 require('../user');
 
-const tableName = 'roles';
-
 const roleSchema = joi
   .object({
     uid: joi.string().required(),
@@ -22,7 +20,7 @@ const roleSchema = joi
   .required();
 
 const Role = Base.Model.extend({
-  tableName,
+  tableName: 'roles',
 
   defaults: function defaults() {
     return {
@@ -44,6 +42,5 @@ const Role = Base.Model.extend({
 });
 
 module.exports = {
-  tableName,
   Role: Base.model('Role', Role),
 };

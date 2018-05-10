@@ -26,19 +26,17 @@
             "uid": "1",
             "email": "admin@example.com",
             "firstname": "admin",
-            "lastname": "",
             "status": "active",
             "locale": "en_US",
-            "password": "$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG"
+            "password": "admin"
           },
           {
             "uid": "2",
             "email": "demo@example.com",
             "firstname": "demo",
-            "lastname": "",
             "status": "active",
             "locale": "en_US",
-            "password": "$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG"
+            "password": "demo"
           }
         ]
       },
@@ -68,27 +66,32 @@
           {
             "name": "Browse hotel",
             "action": "browse",
-            "object": "hotel"
+            "object": "hotel",
+            "app_id": "1"
           },
           {
             "name": "Read hotel",
             "action": "read",
-            "object": "hotel"
+            "object": "hotel",
+            "app_id": "1"
           },
           {
             "name": "Edit hotel",
             "action": "edit",
-            "object": "hotel"
+            "object": "hotel",
+            "app_id": "1"
           },
           {
             "name": "Add hotel",
             "action": "add",
-            "object": "hotel"
+            "object": "hotel",
+            "app_id": "1"
           },
           {
             "name": "Delete hotel",
             "action": "destroy",
-            "object": "hotel"
+            "object": "hotel",
+            "app_id": "1"
           }
         ]
       }

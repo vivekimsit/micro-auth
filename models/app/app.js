@@ -8,8 +8,6 @@ const { Permission } = require('../permission');
 const { Role } = require('../role');
 const { User } = require('../user');
 
-const tableName = 'apps';
-
 const appSchema = joi
   .object({
     uid: joi.string().required(),
@@ -26,7 +24,7 @@ const appSchema = joi
 let App, Apps;
 
 App = Base.Model.extend({
-  tableName,
+  tableName: 'apps',
 
   defaults: function defaults() {
     return {
@@ -58,7 +56,6 @@ Apps = Base.Collection.extend({
 });
 
 module.exports = {
-  tableName,
   App: Base.model('App', App),
   Apps: Base.collection('Apps', Apps),
 };
