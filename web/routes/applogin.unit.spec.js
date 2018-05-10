@@ -41,10 +41,21 @@ describe('POST /account/applogin', () => {
       .expect('Cache-Control', 'no-store') // turn off caching
       .expect(200)
       .end((err, res) => {
+        if (err) {
+          console.log(err);
+        }
         const jsonResponse = JSON.parse(res.body);
         expect(jsonResponse).to.have.own.property('expiration');
         expect(jsonResponse).to.have.own.property('token');
+        expect(jsonResponse).to.have.own.property('roles');
+        expect(jsonResponse).to.have.own.property('permissions');
+
         expect(jsonResponse.roles).to.deep.equal([roles[0]]);
+        expect(jsonResponse.permissions).to.deep.equal([
+          permissions[0],
+          permissions[1],
+          permissions[2]
+        ]);
       });
   });
 

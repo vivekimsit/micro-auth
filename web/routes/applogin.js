@@ -42,7 +42,12 @@ async function run(req, res, next) {
   if (!apps.length) {
     return next(boom.unauthorized('User is not authorised for this app.'));
   }
-  return successResponse(user, roles.toJSON(), secret, res);
+  const items = user.related('roles').toJSON();
+  let permissions = [];
+  items.forEach(item => {
+    permissions = permissions.concat(item.permissions);
+  });
+  return successResponse(user, roles, permissions, secret, res);
 }
 
 async function getApp(name) {
@@ -57,7 +62,7 @@ async function getApp(name) {
 }
 
 async function authorize({ email, password }) {
-  const user = await User.findOne({ email, status: 'active' });
+  const user = await User.findOne({ email, status: 'active' }, { withRelated: ['roles.permissions'] });
 
   let isAuthorized = false;
   if (user) {
@@ -74,7 +79,7 @@ async function getUserApps(user) {
   return user.apps().fetch();
 }
 
-async function successResponse(user, roles, secret, res) {
+async function successResponse(user, roles, permissions, secret, res) {
   const expiration = getExpirationTime();
   const payload = { user, expiration };
   const token = jwt.sign(payload, secret);
@@ -91,8 +96,10 @@ async function successResponse(user, roles, secret, res) {
   // eslint-disable-next-line no-param-reassign
   user = pick(user, userFields);
   // eslint-disable-next-line no-param-reassign
-  roles = roles.map(role => pick(role, roleFields));
-  return res.json({ expiration, token, ...user, roles });
+  roles = roles.toJSON().map(role => pick(role, roleFields));
+  // eslint-disable-next-line no-param-reassign
+  permissions = permissions.map(permission => pick(permission, ['name', 'object', 'action']));
+  return res.json({ expiration, token, ...user, roles, permissions });
 }
 
 const getExpirationTime = () =>
