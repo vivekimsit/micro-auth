@@ -11,9 +11,6 @@ const pick = require('lodash/pick');
 const models = require('../../models');
 const { App, Apps, User } = models;
 
-const userModel = require('../../models/user');
-const roleModel = require('../../models/role');
-
 const loginSchema = joi
   .object({
     appname: joi.string().required(),
@@ -36,8 +33,8 @@ async function run(req, res, next) {
   if (!roles.length) {
     return next(boom.unauthorized('User does not have permission.'));
   }
-  const apps = await getUserApps(roles);
-  if (!apps.length || !apps.includes(appname)) {
+  const apps = await getUserApps(user);
+  if (!apps.length) {
     return next(boom.unauthorized('User is not authorised for this app.'));
   }
   return successResponse(user, roles, secret, res);
@@ -55,7 +52,7 @@ async function getApp(name) {
 }
 
 async function authorize({ email, password }) {
-  const user = await User.findOne({ email, status: 'active' });
+  const user = await User.findOne({ email, status: 'active'});
 
   let isAuthorized = false;
   if (user) {
@@ -64,13 +61,12 @@ async function authorize({ email, password }) {
   return { isAuthorized, user };
 }
 
-async function getUserRoles({ uid }) {
-  return roleModel.getUserRoles({ uid });
+async function getUserRoles(user) {
+  return user.roles().fetch();
 }
 
-async function getUserApps(roles) {
-  const apps = await appModel.getByIds(roles.map(r => r.app_id));
-  return apps.map(app => app.name);
+async function getUserApps(user) {
+  return user.apps().fetch();
 }
 
 async function successResponse(user, roles, secret, res) {

@@ -42,7 +42,7 @@ describe('POST /account/applogin', () => {
       .form(payload)
       .expect('Content-Type', /json/)
       .expect('Cache-Control', 'no-store') // turn off caching
-      .expect(401)
+      .expect(200)
       .end((err, res) => {});
   });
 

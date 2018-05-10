@@ -28,7 +28,7 @@
             "firstname": "admin",
             "status": "active",
             "locale": "en_US",
-            "password": "admin"
+            "password": "$2b$10$BGJc7xN.y9A/O5Cme67i7.qAY.6ZDpUHV8RxLYI51e.0WoDn0GRU6"
           },
           {
             "uid": "2",
@@ -97,6 +97,21 @@
       }
     ],
     "relations": [
+      {
+        "from": {
+          "model": "User",
+          "match": "uid",
+          "relation": "apps"
+        },
+        "to": {
+          "model": "App",
+          "match": "name"
+        },
+        "entries": {
+          "1": ["demo"],
+          "2": ["bar"]
+        }
+      },
       {
         "from": {
           "model": "Role",

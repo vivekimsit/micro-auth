@@ -50,7 +50,7 @@ if (value.DB_CLIENT === 'sqlite3') {
   };
 } else {
   exports = {
-    client: value.DB_CLIENT,
+    client: 'mysql',
     connection: {
       host: value.DB_HOST,
       port: value.DB_PORT,

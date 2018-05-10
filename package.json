@@ -19,7 +19,7 @@
   "author": "vivekimsit@gmail.com",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^1.0.3",
+    "bcrypt": "^2.0.1",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
     "bookshelf": "^0.13.3",
