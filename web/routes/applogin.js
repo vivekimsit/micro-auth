@@ -57,7 +57,7 @@ async function getApp(name) {
 }
 
 async function authorize({ email, password }) {
-  const user = await User.findOne({ email, status: 'active'});
+  const user = await User.findOne({ email, status: 'active' });
 
   let isAuthorized = false;
   if (user) {

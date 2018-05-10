@@ -5,9 +5,6 @@ const sinon = require('sinon');
 const request = require('super-request');
 const KnexMigrator = require('knex-migrator');
 
-const appModel = require('../../models/app');
-const roleModel = require('../../models/role');
-const userModel = require('../../models/user');
 const server = require('../server');
 const { apps, users, roles, permissions } = require('../../test/fixtures');
 
