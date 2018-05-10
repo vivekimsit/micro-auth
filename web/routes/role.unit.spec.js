@@ -18,7 +18,7 @@ describe('POST /account/login', () => {
     sandbox.restore();
   });
 
-  it('should add role with valid request details', async () => {
+  xit('should add role with valid request details', async () => {
     const appname = 'demo';
     const role_id = '1';
     const user_id = '1';

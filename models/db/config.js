@@ -43,7 +43,7 @@ if (value.DB_CLIENT === 'sqlite3') {
   exports = {
     client: value.DB_CLIENT,
     connection: {
-      filename: 'content/data/ma-test.db',
+      filename: './microauth.db',
     },
     useNullAsDefault: true,
     debug: value.DEBUG,

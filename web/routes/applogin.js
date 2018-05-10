@@ -8,7 +8,9 @@ const moment = require('moment');
 const jwt = require('jsonwebtoken');
 const pick = require('lodash/pick');
 
-const { App, Apps } = require('../../models/app');
+const models = require('../../models');
+const { App, Apps, User } = models;
+
 const userModel = require('../../models/user');
 const roleModel = require('../../models/role');
 
@@ -53,13 +55,11 @@ async function getApp(name) {
 }
 
 async function authorize({ email, password }) {
-  const users = await userModel.getUsers({ email, is_active: true });
+  const user = await User.findOne({ email, status: 'active' });
 
   let isAuthorized = false;
-  // eslint-disable-next-line no-unused-vars
-  const [user, ...rest] = users;
   if (user) {
-    isAuthorized = await bcrypt.compare(password, user.password);
+    isAuthorized = await bcrypt.compare(password, user.get('password'));
   }
   return { isAuthorized, user };
 }

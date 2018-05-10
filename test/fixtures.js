@@ -10,7 +10,7 @@ const apps = [
   },
   {
     uid: '2',
-    name: 'demo',
+    name: 'bar',
     secret: 'bar',
     slug: 'demo-app',
     status: 'enabled'

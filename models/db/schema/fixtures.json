@@ -5,14 +5,14 @@
         "entries": [
           {
             "uid": "1",
-            "name": "Demo App",
+            "name": "demo",
             "secret": "demo",
             "slug": "demo-app",
             "status": "enabled"
           },
           {
             "uid": "2",
-            "name": "Bar App",
+            "name": "bar",
             "secret": "bar",
             "slug": "bar-app",
             "status": "enabled"
