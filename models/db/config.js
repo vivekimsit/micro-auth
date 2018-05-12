@@ -13,7 +13,10 @@ const schema = joi
     DB_USER: joi.string().required(),
     DB_NAME: joi.string().required(),
     DB_PASSWORD: joi.string().allow(''),
-    DB_DEBUG: joi.boolean().default(false),
+    NODE_ENV: joi
+      .string()
+      .allow(['development', 'production', 'test'])
+      .default('development'),
     DB_CLIENT: joi
       .string()
       .allow(['mysql', 'sqlite3'])
@@ -43,14 +46,15 @@ if (value.DB_CLIENT === 'sqlite3') {
   exports = {
     client: value.DB_CLIENT,
     connection: {
-      filename: './microauth.db',
+      filename: 'microauth.db',
     },
+    pool: { min: 1, max: 1 },
     useNullAsDefault: true,
-    debug: value.DEBUG,
+    debug: false,
   };
 } else {
   exports = {
-    client: 'mysql',
+    client: value.DB_CLIENT,
     connection: {
       host: value.DB_HOST,
       port: value.DB_PORT,

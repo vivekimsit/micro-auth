@@ -3,7 +3,7 @@
 const { promisify } = require('es6-promisify');
 
 const config = require('./config');
-const logger = require('./lib/logger');
+const { logger } = require('../lib');
 const server = require('./server');
 const { db } = require('../models');
 

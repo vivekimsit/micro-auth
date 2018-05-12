@@ -14,7 +14,6 @@ describe('POST /account/applogin', () => {
   let sandbox;
 
   beforeEach(async () => {
-    await knexMigrator.reset({ force: true });
     await knexMigrator.init();
 
     sandbox = sinon.sandbox.create();
