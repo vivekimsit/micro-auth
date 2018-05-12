@@ -31,9 +31,9 @@ Bookshelf.Model = Bookshelf.Model.extend(
       //console.log('On fetching');
     },
 
-    onCreating: function onCreating(newObj, attr, options) {
+    onCreating: function onCreating(newObj, attr, options = {}) {
       //console.log('On Creating');
-      if (options.importing) {
+      if (options.importing || options.internal) {
         this.set('created_by', Bookshelf.Model.internalUser);
       }
     },
@@ -51,7 +51,7 @@ Bookshelf.Model = Bookshelf.Model.extend(
     },
   },
   {
-    internalUser: 1,
+    internalUser: '1',
     /**
      * Select a collection based on a query
      * @param {Object} [query]

@@ -9,13 +9,13 @@ const Base = require('../base');
 require('../app');
 require('../role');
 
-const userSchema = joi
+const createSchema = joi
   .object({
     uid: joi.string().required(),
     email: joi.string().required(),
     firstname: joi.string().required(),
     lastname: joi.string().required(),
-    locale: joi.string().default('en-US'),
+    locale: joi.string().default('en_US'),
     password: joi.string().required(),
     phone: joi.string(),
     status: joi.string().default('active'),
@@ -31,7 +31,13 @@ User = Base.Model.extend({
   defaults: function defaults() {
     return {
       uid: uuidv4(),
+      created_by: '1',
     };
+  },
+
+  onCreating: function onCreating(newObj, attr, options) {
+    Base.Model.prototype.onCreating.apply(this, arguments);
+    joi.attempt(this.changed, createSchema);
   },
 
   apps: function() {

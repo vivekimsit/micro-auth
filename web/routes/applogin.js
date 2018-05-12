@@ -28,19 +28,19 @@ async function run(req, res, next) {
 
   const { isAuthorized, user } = await authorize({ email, password });
   if (!user) {
-    return next(boom.notFound('User not found.'));
+    throw boom.notFound('User not found.');
   }
   if (!isAuthorized) {
-    return next(boom.unauthorized('Invalid email or password.'));
+    throw boom.unauthorized('Invalid email or password.');
   }
 
   const roles = await getUserRoles(user);
   if (!roles.length) {
-    return next(boom.unauthorized('User does not have permission.'));
+    throw boom.unauthorized('User does not have permission.');
   }
   const apps = await getUserApps(user);
   if (!apps.length) {
-    return next(boom.unauthorized('User is not authorised for this app.'));
+    throw boom.unauthorized('User is not authorised for this app.');
   }
   let permissions = [];
   roles.forEach(role => {
