@@ -87,7 +87,9 @@ async function successResponse(email, res) {
   if (user.roles) {
     result.roles = user.roles.map(role => pick(role, roleFields));
     result.permissions = user.roles.map(role => {
-      return role.permissions.map(permission => pick(permission, permissionFields));
+      return role.permissions.map(permission =>
+        pick(permission, permissionFields)
+      );
     });
   }
 

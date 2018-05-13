@@ -40,11 +40,7 @@ async function run(req, res, next) {
     throw boom.badRequest(`User is not authorised to access app.`);
   }
 
-  return successResponse(
-    user.get('email'),
-    app.get('secret'),
-    res
-  );
+  return successResponse(user.get('email'), app.get('secret'), res);
 }
 
 async function getApp(name) {
@@ -109,7 +105,9 @@ async function successResponse(email, secret, res) {
   if (user.roles) {
     result.roles = user.roles.map(role => pick(role, roleFields));
     result.permissions = user.roles.map(role => {
-      return role.permissions.map(permission => pick(permission, permissionFields));
+      return role.permissions.map(permission =>
+        pick(permission, permissionFields)
+      );
     });
   }
   result.permissions = flatten(result.permissions);
