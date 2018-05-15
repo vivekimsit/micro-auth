@@ -1,3 +1,5 @@
+<a href="https://travis-ci.org/TryGhost/Ghost"><img align="right" src="https://travis-ci.org/vivekimsit/micro-auth.svg?branch=master" alt="Build status" /></a>
+
 # micro-auth
 Authentication microservice
 
