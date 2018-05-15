@@ -12,7 +12,7 @@
     "rollback-db": "node ./scripts/rollback",
     "rollback-db:prod": "cross-env NODE_ENV=production node ./scripts/rollback",
     "prettier": "prettier --write \"{models,web}/**/*.js\"",
-    "test-unit": "cross-env NODE_ENV=test mocha ./test/setup.js ./**/*.unit.spec.js",
+    "test-unit": "cross-env NODE_ENV=test mocha --timeout 10000 ./test/setup.js ./**/*.unit.spec.js",
     "test-unit:dev": "cross-env NODE_ENV=test mocha --watch ./test/setup.js ./**/*unit.spec.js",
     "test-e2e": "cross-env NODE_ENV=test mocha ./test/setup.js ./**/*.e2e.spec.js",
     "test": "npm run test-unit && npm run test-e2e"
@@ -26,7 +26,6 @@
     "bookshelf": "^0.13.3",
     "boom": "^7.1.1",
     "cors": "^2.8.4",
-    "debug": "^3.1.0",
     "es6-promisify": "^6.0.0",
     "express": "^4.16.2",
     "joi": "^13.1.2",
