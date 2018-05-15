@@ -2,15 +2,17 @@
 
 const bcrypt = require('bcrypt');
 const boom = require('boom');
-const flatten = require('lodash/flatten');
 const joi = require('joi');
 // sign with default (HMAC SHA256)
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
+const flatten = require('lodash/flatten');
 const pick = require('lodash/pick');
 
 const models = require('../../models');
 const { App, User } = models;
+
+const debug = require('debug')('microauth:test');
 
 const loginSchema = joi
   .object({
@@ -23,6 +25,7 @@ const loginSchema = joi
 async function run(req, res, next) {
   const { appname, email, password } = joi.attempt(req.body, loginSchema);
   const { exists, app } = await getApp(appname);
+  debug(`${appname} exists? ${exists}`);
   if (!exists) {
     throw boom.badRequest(`Invalid app name: ${appname}.`);
   }
@@ -31,6 +34,7 @@ async function run(req, res, next) {
   if (!user) {
     throw boom.notFound('User not found.');
   }
+  debug(`User ${user.get('email')} is authorised? ${isAuthorized}`);
   if (!isAuthorized) {
     throw boom.unauthorized('Invalid email or password.');
   }
