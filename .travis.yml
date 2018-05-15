@@ -11,9 +11,4 @@ cache:
     - node_modules
 
 env:
-  - DB_HOST=localhost
-  - DB_PORT=2369
-  - DB_USER=test
-  - DB_NAME=microauth
-  - DB_PASSWORD=''
-  - SERVER_PORT=8000
+  - DB_HOST=localhost DB_PORT=2369 DB_USER=test DB_NAME=microauth DB_PASSWORD='' SERVER_PORT=8000
