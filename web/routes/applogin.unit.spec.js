@@ -42,7 +42,7 @@ describe('POST /account/applogin', () => {
       .expect(200)
       .end((err, res) => {
         if (err) {
-          console.log(err);
+          return console.log(err);
         }
         const jsonResponse = JSON.parse(res.body);
         expect(jsonResponse).to.have.own.property('expiration');
