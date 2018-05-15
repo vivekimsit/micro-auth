@@ -1,4 +1,4 @@
-<a href="https://github.com/vivekimsit/micro-auth"><img align="right" src="https://travis-ci.org/vivekimsit/micro-auth.svg?branch=master" alt="Build status" /></a>
+<a href="https://travis-ci.org/vivekimsit/micro-auth"><img align="right" src="https://travis-ci.org/vivekimsit/micro-auth.svg?branch=master" alt="Build status" /></a>
 
 # micro-auth
 Authentication microservice
