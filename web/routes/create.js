@@ -3,12 +3,10 @@
 const bcrypt = require('bcrypt');
 const boom = require('boom');
 const joi = require('joi');
-const uuidv4 = require('uuid/v4');
 const pick = require('lodash/pick');
 
-const appModel = require('../../models/app');
-const roleModel = require('../../models/role');
-const userModel = require('../../models/user');
+const models = require('../../models');
+const { App, Apps, User } = models;
 
 const createSchema = joi
   .object({
@@ -18,11 +16,11 @@ const createSchema = joi
       .required(),
     phone: joi.string(),
     appname: joi.string().required(),
-    username: joi.string().required(),
     firstname: joi.string().required(),
     lastname: joi.string().required(),
     password: joi.string().required(),
-    language: joi.string().default('en-US'),
+    locale: joi.string().default('en-US'),
+    status: joi.string().default('active'),
   })
   .unknown()
   .required();
@@ -37,55 +35,30 @@ async function run(req, res, next) {
   if (!app) {
     throw boom.badRequest(`Invalid app name ${appname}.`);
   }
-  const role = await getDefaultRoleForApp(app);
-  if (!role) {
-    throw boom.badRequest(`No default role found for app ${appname}.`);
-  }
-  const user = await addAccount(account);
-  await addRole(user, role);
-  return successResponse(user, role, res);
+  const user = await addAccount(account, app);
+  return successResponse(user.get('email'), res);
 }
 
 async function isEmailTaken({ email }) {
-  const users = await userModel.getUsers({ email });
-  return users.length > 0;
-}
-
-async function getDefaultRoleForApp({ uid }) {
-  // eslint-disable-next-line no-unused-vars
-  const [role, ...rest] = await roleModel.getRoles({
-    app_id: uid,
-    name: 'user',
-  });
-  return role;
+  const user = await User.findOne({ email });
+  return !!user;
 }
 
 async function getApp(name) {
-  const apps = await appModel.getApps({ name });
-  // eslint-disable-next-line no-unused-vars
-  const [app, ...rest] = apps;
-  return app;
+  return await App.findOne({ name }, { withRelated: ['roles'] });
 }
 
-async function addRole(user, role) {
-  await roleModel.addUserRole(user.uid, role.uid);
-}
-
-async function addAccount(account) {
+async function addAccount(account, app) {
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(account.password, salt);
 
-  // eslint-disable-next-line no-param-reassign
-  account.uid = uuidv4();
-  // eslint-disable-next-line no-param-reassign
-  account.salt = salt;
-  // eslint-disable-next-line no-param-reassign
-  account.password = hash;
-  const user = await userModel.addUser(account);
-  return user;
+  const role = app.related('roles').findWhere({ name: 'Employee' });
+  const newUser = await app.related('users').create(account);
+  await newUser.related('roles').attach([role]);
+  return newUser;
 }
 
-async function successResponse(user, role, res) {
+async function successResponse(email, res) {
   const userFields = [
     'device',
     'email',
@@ -94,14 +67,33 @@ async function successResponse(user, role, res) {
     'lastname',
     'phone',
     'uid',
-    'username',
   ];
   const roleFields = ['name', 'description'];
-  // eslint-disable-next-line no-param-reassign
-  user = pick(user, userFields);
-  // eslint-disable-next-line no-param-reassign
-  role = pick(role, roleFields);
-  res.status(201).json({ ...user, roles: [role] });
+  const permissionFields = ['name', 'object', 'action'];
+
+  let user = await User.findOne(
+    {
+      email: email,
+    },
+    {
+      withRelated: ['roles.permissions'],
+    }
+  );
+  user = user.toJSON();
+  const result = Object.assign({}, { ...user });
+  result.roles = [];
+  result.permissions = [];
+
+  if (user.roles) {
+    result.roles = user.roles.map(role => pick(role, roleFields));
+    result.permissions = user.roles.map(role => {
+      return role.permissions.map(permission =>
+        pick(permission, permissionFields)
+      );
+    });
+  }
+
+  res.status(201).json({ ...result });
 }
 
 module.exports = run;

@@ -3,83 +3,95 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
 const request = require('super-request');
+const KnexMigrator = require('knex-migrator');
 
-const appModel = require('../../models/app');
-const userModel = require('../../models/user');
-const roleModel = require('../../models/role');
 const server = require('../server');
+const { apps, users, roles, permissions } = require('../../test/fixtures');
+
+const knexMigrator = new KnexMigrator();
 
 describe('POST /account/create', () => {
   let sandbox;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await knexMigrator.init();
+
     sandbox = sinon.sandbox.create();
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    await knexMigrator.reset({ force: true });
+
     sandbox.restore();
   });
 
-  xit('should create user with valid credentials', async () => {
+  it('should create user with valid app name', async () => {
     const payload = {
-      appname: 'demo',
-      email: 'foo@example.com',
-      firstname: 'foo',
-      lastname: 'bar',
-      password: 'demo',
-      username: 'demo',
+      email: 'email@example.com',
+      password: 'pass',
+      appname: apps[0].name,
+      firstname: 'firstname',
+      lastname: 'lastname',
     };
-    const apps = [
-      {
-        uid: '1',
-        name: 'demo',
-        secret: 'demo',
-      },
-    ];
-    const roles = [
-      {
-        uid: '1',
-        app_id: '1',
-        name: 'user',
-        description: 'App User',
-      },
-    ];
 
-    const addUser = sandbox.stub(userModel, 'addUser').returns({
-      uid: '1',
-      appname: 'demo',
-      email: 'foo@example.com',
-      firstname: 'foo',
-      lastname: 'bar',
-      username: 'demo',
-      phone: '',
-      language: 'en-US',
-      roles: [],
-    });
-    const getApps = sandbox.stub(appModel, 'getApps').returns(apps);
-    const getUsers = sandbox.stub(userModel, 'getUsers').returns([]);
-    const getRoles = sandbox.stub(roleModel, 'getRoles').returns(roles);
-    const addUserRole = sandbox
-      .stub(roleModel, 'addUserRole')
-      .returns({ user_id: '1', role_id: '1' });
-
-    let response;
-    await request(server)
+    return await request(server)
       .post('/account/create')
       .form(payload)
+      .expect('Content-Type', /json/)
+      .expect('Cache-Control', 'no-store') // turn off caching
       .expect(201)
-      .expect(function(res) {
-        response = JSON.parse(res);
-      })
-      .end();
+      .end((err, res) => {
+        if (err) {
+          console.log('Error', err);
+        }
+        const jsonResponse = JSON.parse(res.body);
+        expect(jsonResponse).to.have.own.property('email');
+        expect(jsonResponse).to.have.own.property('firstname');
+        expect(jsonResponse).to.have.own.property('lastname');
+        expect(jsonResponse).to.have.own.property('roles');
+        expect(jsonResponse).to.have.own.property('permissions');
+      });
+  });
 
-    expect(getUsers).to.be.calledOnce;
-    expect(getRoles).to.be.calledOnce;
-    expect(getApps).to.be.calledOnce;
-    expect(addUser).to.be.calledOnce;
-    expect(addUserRole).to.be.calledOnce;
+  it('should fail for invalid app name', async () => {
+    const payload = {
+      email: 'email@example.com',
+      password: 'pass',
+      appname: 'invalid',
+      firstname: 'firstname',
+      lastname: 'lastname',
+    };
 
-    expect(response).to.have.property('email');
-    expect(response).to.have.property('roles');
+    return await request(server)
+      .post('/account/create')
+      .form(payload)
+      .expect('Content-Type', /json/)
+      .expect('Cache-Control', 'no-store') // turn off caching
+      .expect(400)
+      .end((err, res) => {
+        if (err) {
+          console.log('Error', err);
+        }
+      });
+  });
+
+  it('should fail for incomplete data', async () => {
+    const payload = {
+      email: 'email@example.com',
+    };
+
+    return await request(server)
+      .post('/account/create')
+      .form(payload)
+      .expect('Content-Type', /json/)
+      .expect('Cache-Control', 'no-store') // turn off caching
+      .expect(400)
+      .end((err, res) => {
+        if (err) {
+          console.log('Error', err);
+        }
+        const jsonResponse = JSON.parse(res.body);
+        expect(jsonResponse).to.have.own.property('message');
+      });
   });
 });

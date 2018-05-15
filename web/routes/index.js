@@ -6,7 +6,7 @@ const applogin = require('./applogin');
 const create = require('./create');
 const login = require('./login');
 const role = require('./role');
-const { catchAsyncErrors } = require('../lib/utils');
+const { catchAsyncErrors } = require('../../lib/utils');
 
 const router = new Router();
 

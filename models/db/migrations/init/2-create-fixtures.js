@@ -5,7 +5,7 @@ const _ = require('lodash');
 const uuidv4 = require('uuid/v4');
 
 const fixtures = require('../../schema/fixtures');
-const logger = require('../../../../web/lib/logger');
+const logger = require('../../../../lib/logger');
 const models = require('../../../');
 
 module.exports.config = {

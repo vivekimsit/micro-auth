@@ -3,7 +3,7 @@
 const Promise = require('bluebird');
 
 const { commands, schema } = require('../../schema');
-const logger = require('../../../../web/lib/logger');
+const logger = require('../../../../lib/logger');
 const schemaTables = Object.keys(schema);
 
 module.exports.up = function createTables({ connection }) {

@@ -22,6 +22,7 @@ const users = [
     uid: '1',
     email: 'admin@example.com',
     firstname: 'admin',
+    lastname: 'admin',
     status: 'active',
     locale: 'en_US',
     password: 'admin'
@@ -30,6 +31,7 @@ const users = [
     uid: '2',
     email: 'demo@example.com',
     firstname: 'demo',
+    lastname: 'demo',
     status: 'active',
     locale: 'en_US',
     password: 'demo'
@@ -38,6 +40,7 @@ const users = [
     uid: '3',
     email: 'employee@example.com',
     firstname: 'employee',
+    lastname: 'employee',
     status: 'active',
     locale: 'en_US',
     password: 'employee'

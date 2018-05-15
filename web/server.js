@@ -5,7 +5,7 @@ const cors = require('cors');
 const express = require('express');
 const http = require('http');
 
-const { errorHandler, logErrors, logRequests } = require('./lib/utils');
+const { errorHandler, logErrors, logRequests } = require('../lib/utils');
 const routes = require('./routes');
 
 const app = express();

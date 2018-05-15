@@ -2,14 +2,15 @@
 
 const bcrypt = require('bcrypt');
 const boom = require('boom');
+const flatten = require('lodash/flatten');
 const joi = require('joi');
-const moment = require('moment');
 // sign with default (HMAC SHA256)
 const jwt = require('jsonwebtoken');
+const moment = require('moment');
 const pick = require('lodash/pick');
 
 const models = require('../../models');
-const { App, Apps, User } = models;
+const { App, User } = models;
 
 const loginSchema = joi
   .object({
@@ -21,49 +22,41 @@ const loginSchema = joi
 
 async function run(req, res, next) {
   const { appname, email, password } = joi.attempt(req.body, loginSchema);
-  const { exists, secret } = await getApp(appname);
+  const { exists, app } = await getApp(appname);
   if (!exists) {
     throw boom.badRequest(`Invalid app name: ${appname}.`);
   }
 
   const { isAuthorized, user } = await authorize({ email, password });
   if (!user) {
-    return next(boom.notFound('User not found.'));
+    throw boom.notFound('User not found.');
   }
   if (!isAuthorized) {
-    return next(boom.unauthorized('Invalid email or password.'));
+    throw boom.unauthorized('Invalid email or password.');
   }
 
-  const roles = await getUserRoles(user);
-  if (!roles.length) {
-    return next(boom.unauthorized('User does not have permission.'));
+  const { result } = await isUserBelongsToApp(user, app.get('name'));
+  if (!result) {
+    throw boom.badRequest(`User is not authorised to access app.`);
   }
-  const apps = await getUserApps(user);
-  if (!apps.length) {
-    return next(boom.unauthorized('User is not authorised for this app.'));
-  }
-  let permissions = [];
-  roles.forEach(role => {
-    permissions = permissions.concat(role.permissions);
-  });
-  return successResponse(user, roles, permissions, secret, res);
+
+  return successResponse(user.get('email'), app.get('secret'), res);
 }
 
 async function getApp(name) {
-  let exists = false;
-  let secret = null;
   const app = await App.findOne({ name });
+
+  let exists = false;
   if (app) {
     exists = true;
-    secret = app.get('secret');
   }
-  return { exists, secret };
+  return { exists, app };
 }
 
 async function authorize({ email, password }) {
   const user = await User.findOne(
     { email, status: 'active' },
-    { withRelated: ['roles.permissions'] }
+    { withRelated: ['apps', 'roles.permissions'] }
   );
 
   let isAuthorized = false;
@@ -73,37 +66,56 @@ async function authorize({ email, password }) {
   return { isAuthorized, user };
 }
 
-async function getUserRoles(user) {
-  return user.related('roles').toJSON();
+async function isUserBelongsToApp(user, appname) {
+  let result = false;
+  let app = null;
+  app = user.related('apps').findWhere({ name: appname });
+  if (app) {
+    result = true;
+  }
+  return { result, app };
 }
 
-async function getUserApps(user) {
-  return user.apps().fetch();
-}
-
-async function successResponse(user, roles, permissions, secret, res) {
-  const expiration = getExpirationTime();
-  const payload = { user, expiration };
-  const token = jwt.sign(payload, secret);
-
+async function successResponse(email, secret, res) {
   const userFields = [
-    'uid',
+    'device',
     'email',
-    'username',
     'firstname',
-    'lastname',
     'language',
+    'lastname',
+    'phone',
+    'uid',
   ];
   const roleFields = ['name', 'description'];
-  // eslint-disable-next-line no-param-reassign
-  user = pick(user, userFields);
-  // eslint-disable-next-line no-param-reassign
-  roles = roles.map(role => pick(role, roleFields));
-  // eslint-disable-next-line no-param-reassign
-  permissions = permissions.map(permission =>
-    pick(permission, ['name', 'object', 'action'])
+  const permissionFields = ['name', 'object', 'action'];
+
+  let user = await User.findOne(
+    {
+      email: email,
+    },
+    {
+      withRelated: ['roles.permissions'],
+    }
   );
-  return res.json({ expiration, token, ...user, roles, permissions });
+  user = user.toJSON();
+  const result = Object.assign({}, { ...user });
+  result.roles = [];
+  result.permissions = [];
+
+  if (user.roles) {
+    result.roles = user.roles.map(role => pick(role, roleFields));
+    result.permissions = user.roles.map(role => {
+      return role.permissions.map(permission =>
+        pick(permission, permissionFields)
+      );
+    });
+  }
+  result.permissions = flatten(result.permissions);
+
+  const expiration = getExpirationTime();
+  const token = jwt.sign(result, secret);
+
+  res.json({ token, expiration });
 }
 
 const getExpirationTime = () =>

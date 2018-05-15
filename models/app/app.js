@@ -4,9 +4,10 @@ const joi = require('joi');
 const uuidv4 = require('uuid/v4');
 
 const Base = require('../base');
-const { Permission } = require('../permission');
-const { Role } = require('../role');
-const { User } = require('../user');
+
+require('../permission');
+require('../role');
+require('../user');
 
 const appSchema = joi
   .object({
@@ -39,15 +40,15 @@ App = Base.Model.extend({
   },
 
   roles: function() {
-    return this.hasMany(Role);
+    return this.hasMany('Role');
   },
 
   permissions: function() {
-    return this.hasMany(Permission);
+    return this.hasMany('Permission');
   },
 
   users: function() {
-    return this.belongsToMany(User);
+    return this.belongsToMany('User');
   },
 });
 
