@@ -11,7 +11,7 @@ knexMigrator.isDatabaseOK()
     console.log('Database is OK');
   })
   .catch(async (err) => {
-    if (err.code === 'DB_NOT_INITIALISED') {
+    if (err.code === 'DB_NOT_INITIALISED' || err.code === 'MIGRATION_TABLE_IS_MISSING') {
       // database is not initialised?
       await knexMigrator.init();
       process.exit();
