@@ -2,15 +2,20 @@
 
 const { expect } = require('chai');
 const request = require('super-request');
+
 const server = require('../server');
+const { users } = require('../../test/fixtures');
 
 describe('POST /account/login', () => {
   xit('should login users by email', async () => {
-    const email = 'demo@example.com';
-    const password = 'demo';
+    const payload = {
+      email: users[0].email,
+      password: users[0].password,
+    };
+
     const resp = await request(server)
       .post('/account/login')
-      .form({ email, password })
+      .form(payload)
       .json(true)
       .expect(200)
       .end();

@@ -1,90 +1,82 @@
 'use strict';
 
+const KnexMigrator = require('knex-migrator');
 const { expect } = require('chai');
 const sinon = require('sinon');
 const request = require('super-request');
 
-const userModel = require('../../models/user');
 const server = require('../server');
+const { users } = require('../../test/fixtures');
+
+const knexMigrator = new KnexMigrator();
 
 describe('POST /account/login', () => {
   let sandbox;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await knexMigrator.init();
+
     sandbox = sinon.sandbox.create();
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    await knexMigrator.reset({ force: true });
+
     sandbox.restore();
   });
 
-  xit('should login user with valid credentials', async () => {
-    const email = 'demo@example.com';
-    const password = 'demo';
-
-    const expected = {
-      uid: '1',
-      username: 'demo',
-      email: 'demo@example.com',
-      firstname: 'foo',
-      lastname: 'bar',
-      language: 'en-US',
+  it('should login user with valid credentials', async () => {
+    const payload = {
+      email: users[0].email,
+      password: users[0].password,
     };
-    const users = [
-      {
-        uid: '1',
-        username: 'demo',
-        firstname: 'foo',
-        lastname: 'bar',
-        email: 'demo@example.com',
-        language: 'en-US',
-        password:
-          '$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG',
-      },
-    ];
 
-    const getUsers = sandbox.stub(userModel, 'getUsers').returns(users);
-    await request(server)
+    return await request(server)
       .post('/account/login')
-      .form({ email, password })
+      .json()
+      .form(payload)
+      .expect('Content-Type', /json/)
+      .expect('Cache-Control', 'no-store') // turn off caching
       .expect(200)
-      .expect(expected)
-      .end();
+      .end(async (err, res) => {
+        if (err) {
+          return console.log(err);
+        }
+        const jsonResponse = JSON.parse(res.body);
 
-    expect(getUsers).to.be.calledOnce;
+        expect(jsonResponse).to.have.own.property('uid');
+      });
   });
 
-  xit('should not allow login user with invalid password', async () => {
-    const users = [
-      {
-        password:
-          '$2a$10$IbfPoCGdLLHh1hyQ9b9UROuNJeyTzk5VMVDf5504mcTJsHfugyaJG',
-        uid: 1,
-      },
-    ];
-    const email = 'demo@example.com';
-    const password = 'd';
+  it('should not allow login with invalid email', async () => {
+    const payload = {
+      email: 'invalid@example.com',
+      password: users[0].password,
+    };
 
-    const getUsers = sandbox.stub(userModel, 'getUsers').returns(users);
-    await request(server)
+    return await request(server)
       .post('/account/login')
-      .form({ email, password })
-      .expect(401)
-      .end();
-
-    expect(getUsers).to.be.calledOnce;
+      .json()
+      .form(payload)
+      .expect('Content-Type', /json/)
+      .expect('Cache-Control', 'no-store') // turn off caching
+      .expect(404)
+      .end(async (err, res) => {});
   });
 
-  xit('should not allow login user with invalid email', async () => {
-    const email = 'd@example.com';
-    const password = 'demo';
-    const getUsers = sandbox.stub(userModel, 'getUsers').returns([]);
-    await request(server)
-      .post('/account/login')
-      .form({ email, password })
-      .expect(401)
-      .end();
+  it('should not allow login with invalid password', async () => {
+    const payload = {
+      email: users[0].email,
+      password: 'invalid',
+    };
 
-    expect(getUsers).to.be.calledOnce;
+    return await request(server)
+      .post('/account/login')
+      .json()
+      .form(payload)
+      .expect('Content-Type', /json/)
+      .expect('Cache-Control', 'no-store') // turn off caching
+      .expect(401)
+      .end(async (err, res) => {});
   });
 });

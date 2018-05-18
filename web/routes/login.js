@@ -21,6 +21,9 @@ const loginSchema = joi
 async function run(req, res, next) {
   const login = joi.attempt(req.body, loginSchema);
   const { isAuthorized, user } = await authorize(login);
+  if (!user) {
+    throw boom.notFound('User not found.');
+  }
   if (!isAuthorized) {
     throw boom.unauthorized('Invalid email or password.');
   }
@@ -37,7 +40,7 @@ async function authorize({ email, password }) {
 }
 
 async function successResponse(user, res) {
-  res.status(200).json(user.toJSON());
+  res.json({ uid: user.get('uid') });
 }
 
 module.exports = run;
