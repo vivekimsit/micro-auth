@@ -6,14 +6,14 @@ const apps = [
     name: 'demo',
     secret: 'demo',
     slug: 'demo-app',
-    status: 'enabled'
+    status: 'active'
   },
   {
     uid: '2',
     name: 'bar',
     secret: 'bar',
     slug: 'demo-app',
-    status: 'enabled'
+    status: 'inactive'
   }
 ];
 

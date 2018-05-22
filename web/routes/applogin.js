@@ -24,10 +24,14 @@ const loginSchema = joi
 
 async function run(req, res, next) {
   const { appname, email, password } = joi.attempt(req.body, loginSchema);
+
   const { exists, app } = await getApp(appname);
   debug(`${appname} exists? ${exists}`);
   if (!exists) {
     throw boom.badRequest(`Invalid app name: ${appname}.`);
+  }
+  if (app.isInactive()) {
+    throw boom.badRequest('App is not active.');
   }
 
   const { isAuthorized, user } = await authorize({ email, password });

@@ -77,6 +77,23 @@ describe('POST /account/applogin', () => {
       .end((err, res) => {});
   });
 
+  it('should fail for inactive app', async () => {
+    const payload = {
+      email: users[0].email,
+      password: users[0].password,
+      appname: apps[1].name,
+    };
+
+    return await request(server)
+      .post('/account/applogin')
+      .json()
+      .form(payload)
+      .expect('Content-Type', /json/)
+      .expect('Cache-Control', 'no-store') // turn off caching
+      .expect(400)
+      .end((err, res) => {});
+  });
+
   it('should fail for unknown user', async () => {
     const payload = {
       email: 'invalid@example.com',

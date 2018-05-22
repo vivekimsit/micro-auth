@@ -34,6 +34,10 @@ App = Base.Model.extend({
     };
   },
 
+  isInactive() {
+    return this.get('status') === 'inactive';
+  },
+
   onCreating: function onCreating(newObj, attr, options) {
     Base.Model.prototype.onCreating.apply(this, arguments);
     joi.attempt(this.changed, appSchema);
