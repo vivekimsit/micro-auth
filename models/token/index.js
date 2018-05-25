@@ -4,7 +4,7 @@
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
 
-const getExpirationTime = (time=1, unit='hours') =>
+const getExpirationTime = (time = 1, unit = 'hours') =>
   // returns time in seconds
   moment()
     .utc()
@@ -22,7 +22,7 @@ class AccessToken {
     const token = jwt.sign(payload, this.secret);
     return { expiration, token };
   }
-} 
+}
 
 module.exports = {
   AccessToken,

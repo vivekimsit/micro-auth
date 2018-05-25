@@ -58,7 +58,7 @@ async function addAccount(account, app) {
   const hash = await bcrypt.hash(account.password, salt);
 
   const employee = app.related('roles').findWhere({ name: 'Employee' });
-  const newUser  = await app.related('users').create(account);
+  const newUser = await app.related('users').create(account);
   if (!employee) {
     debug('Default role employee not found');
   }

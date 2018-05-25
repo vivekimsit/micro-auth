@@ -66,9 +66,19 @@ User = Base.Model.extend({
     return this.get('status') === Status.Locked;
   },
 
-  toJson: function() {
-    const fields = ['uid', 'email', 'firstname', 'lastname', 'locale'];
-    return pick(this, fields);
+  toJSON: function() {
+    const publicFields = [
+      'device',
+      'email',
+      'firstname',
+      'lastname',
+      'locale',
+      'phone',
+      'uid',
+      'roles',
+    ];
+    const json = Base.Model.prototype.toJSON.call(this);
+    return pick(json, publicFields);
   },
 });
 

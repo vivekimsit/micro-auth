@@ -1,6 +1,7 @@
 'use strict';
 
 const joi = require('joi');
+const pick = require('lodash/pick');
 const uuidv4 = require('uuid/v4');
 
 const Base = require('../base');
@@ -38,6 +39,11 @@ const Role = Base.Model.extend({
 
   users: function() {
     return this.belongsToMany('User');
+  },
+
+  toJson: function() {
+    const publicFields = ['name', 'description'];
+    return pick(this, publicFields);
   },
 });
 

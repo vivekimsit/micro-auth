@@ -84,18 +84,6 @@ async function isUserBelongsToApp(user, appname) {
 }
 
 async function successResponse(email, secret, res) {
-  const userFields = [
-    'device',
-    'email',
-    'firstname',
-    'language',
-    'lastname',
-    'phone',
-    'uid',
-  ];
-  const roleFields = ['name', 'description'];
-  const permissionFields = ['name', 'object', 'action'];
-
   let user = await User.findOne(
     {
       email: email,
@@ -105,19 +93,24 @@ async function successResponse(email, secret, res) {
     }
   );
   user = user.toJSON();
-  const result = Object.assign({}, { ...user });
-  result.roles = [];
-  result.permissions = [];
+  let roles = new Set();
+  let permissions;
 
   if (user.roles) {
-    result.roles = user.roles.map(role => pick(role, roleFields));
-    result.permissions = user.roles.map(role => {
-      return role.permissions.map(permission =>
-        pick(permission, permissionFields)
-      );
+    user.roles.forEach(role => {
+      const { name, description } = role;
+      roles.add({ name, description });
+      permissions = role.permissions.reduce((accum, permission) => {
+        const { name, object, action } = permission;
+        return accum.add({ name, object, action });
+      }, new Set());
     });
   }
-  result.permissions = flatten(result.permissions);
+
+  roles = [...roles];
+  permissions = [...permissions];
+
+  const result = Object.assign({}, { ...user }, { roles }, { permissions });
   const { token, expiration } = new AccessToken(secret).create(result);
   res.json({ token, expiration });
 }

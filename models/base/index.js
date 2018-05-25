@@ -23,7 +23,7 @@ Bookshelf.Model = Bookshelf.Model.extend(
       this.on('updated', this.onUpdated);
     },
 
-    emitChange: function emitChange(model, event, options={}) {
+    emitChange: function emitChange(model, event, options = {}) {
       events.emit(event, model, options);
     },
 
