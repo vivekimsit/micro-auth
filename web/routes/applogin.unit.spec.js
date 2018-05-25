@@ -144,4 +144,21 @@ describe('POST /account/applogin', () => {
       .expect(400)
       .end((err, res) => {});
   });
+
+  it('should fail for users who are not active', async () => {
+    const payload = {
+      email: users[1].email,
+      password: users[1].password,
+      appname: apps[1].name,
+    };
+
+    return await request(server)
+      .post('/account/applogin')
+      .json()
+      .form(payload)
+      .expect('Content-Type', /json/)
+      .expect('Cache-Control', 'no-store') // turn off caching
+      .expect(400)
+      .end((err, res) => {});
+  });
 });

@@ -6,8 +6,7 @@ const joi = require('joi');
 const flatten = require('lodash/flatten');
 const pick = require('lodash/pick');
 
-const models = require('../../models');
-const { AccessToken, App, User } = models;
+const { AccessToken, App, User } = require('../../models');
 
 const debug = require('debug')('microauth:test');
 

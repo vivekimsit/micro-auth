@@ -5,8 +5,7 @@ const boom = require('boom');
 const joi = require('joi');
 const pick = require('lodash/pick');
 
-const models = require('../../models');
-const { App, Apps, User } = models;
+const { App, User } = require('../../models');
 
 const createSchema = joi
   .object({
@@ -27,7 +26,9 @@ const createSchema = joi
 
 async function run(req, res, next) {
   const { appname, ...account } = joi.attempt(req.body, createSchema);
-  const emailTaken = await isEmailTaken(account);
+
+  const { email } = account;
+  const emailTaken = await isEmailTaken(email);
   if (emailTaken) {
     throw boom.conflict('Email is already taken.');
   }
@@ -36,12 +37,16 @@ async function run(req, res, next) {
     throw boom.badRequest(`Invalid app name ${appname}.`);
   }
   const user = await addAccount(account, app);
-  return successResponse(user.get('email'), res);
+  return successResponse(email, res);
 }
 
-async function isEmailTaken({ email }) {
-  const user = await User.findOne({ email });
-  return !!user;
+async function isEmailTaken(email) {
+  let result = true;
+  const user = await User.findOne(email);
+  if (user) {
+    result = false;
+  }
+  return result;
 }
 
 async function getApp(name) {
@@ -52,9 +57,12 @@ async function addAccount(account, app) {
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(account.password, salt);
 
-  const role = app.related('roles').findWhere({ name: 'Employee' });
-  const newUser = await app.related('users').create(account);
-  await newUser.related('roles').attach([role]);
+  const employee = app.related('roles').findWhere({ name: 'Employee' });
+  const newUser  = await app.related('users').create(account);
+  if (!employee) {
+    debug('Default role employee not found');
+  }
+  await newUser.roles().attach(employee);
   return newUser;
 }
 
