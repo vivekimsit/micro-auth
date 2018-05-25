@@ -23,6 +23,10 @@ Bookshelf.Model = Bookshelf.Model.extend(
       this.on('updated', this.onUpdated);
     },
 
+    emitChange: function emitChange(model, event, options={}) {
+      events.emit(event, model, options);
+    },
+
     onSaving: function onSaving(newObj, attrs, options) {
       //console.log('On Saving');
     },

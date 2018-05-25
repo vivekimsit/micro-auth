@@ -3,14 +3,11 @@
 const bcrypt = require('bcrypt');
 const boom = require('boom');
 const joi = require('joi');
-// sign with default (HMAC SHA256)
-const jwt = require('jsonwebtoken');
-const moment = require('moment');
 const flatten = require('lodash/flatten');
 const pick = require('lodash/pick');
 
 const models = require('../../models');
-const { App, User } = models;
+const { AccessToken, App, User } = models;
 
 const debug = require('debug')('microauth:test');
 
@@ -25,9 +22,8 @@ const loginSchema = joi
 async function run(req, res, next) {
   const { appname, email, password } = joi.attempt(req.body, loginSchema);
 
-  const { exists, app } = await getApp(appname);
-  debug(`${appname} exists? ${exists}`);
-  if (!exists) {
+  const app = await getApp(appname);
+  if (!app) {
     throw boom.badRequest(`Invalid app name: ${appname}.`);
   }
   if (app.isInactive()) {
@@ -48,17 +44,11 @@ async function run(req, res, next) {
     throw boom.badRequest(`User is not authorised to access app.`);
   }
 
-  return successResponse(user.get('email'), app.get('secret'), res);
+  return successResponse(email, app.get('secret'), res);
 }
 
 async function getApp(name) {
-  const app = await App.findOne({ name });
-
-  let exists = false;
-  if (app) {
-    exists = true;
-  }
-  return { exists, app };
+  return await App.findOne({ name });
 }
 
 async function authorize({ email, password }) {
@@ -119,19 +109,8 @@ async function successResponse(email, secret, res) {
     });
   }
   result.permissions = flatten(result.permissions);
-
-  const expiration = getExpirationTime();
-  const token = jwt.sign(result, secret);
-
+  const { token, expiration } = new AccessToken(secret).create(result);
   res.json({ token, expiration });
 }
-
-const getExpirationTime = () =>
-  // returns time in seconds
-  moment()
-    .utc()
-    .add(1, 'hours')
-    .unix()
-    .toString();
 
 module.exports = run;

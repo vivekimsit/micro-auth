@@ -1,6 +1,6 @@
 'use strict';
 
-['app', 'role', 'user', 'permission'].forEach(name => {
+['app', 'role', 'user', 'permission', 'token'].forEach(name => {
   Object.assign(exports, require(`./${name}`));
 });
 
