@@ -33,12 +33,21 @@
           },
           {
             "uid": "2",
+            "email": "locked@example.com",
+            "firstname": "locked",
+            "lastname": "locked",
+            "status": "locked",
+            "locale": "en_US",
+            "password": "$2b$10$zPaw21VGJd/Ijargxw6MDeEtb3Y8Q5.3djcKkwHQ5t1oPJ47vsgSG"
+          },
+          {
+            "uid": "3",
             "email": "demo@example.com",
             "firstname": "demo",
             "lastname": "demo",
             "status": "active",
             "locale": "en_US",
-            "password": "demo"
+            "password": "$2b$10$zPaw21VGJd/Ijargxw6MDeEtb3Y8Q5.3djcKkwHQ5t1oPJ47vsgSG"
           }
         ]
       },
@@ -111,7 +120,8 @@
         },
         "entries": {
           "1": ["demo"],
-          "2": ["bar"]
+          "2": ["demo"],
+          "3": ["bar"]
         }
       },
       {

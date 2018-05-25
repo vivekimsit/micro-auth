@@ -147,9 +147,9 @@ describe('POST /account/applogin', () => {
 
   it('should fail for users who are not active', async () => {
     const payload = {
-      email: users[1].email,
-      password: users[1].password,
-      appname: apps[1].name,
+      email: 'locked@example.com',
+      password: 'demo',
+      appname: apps[0].name,
     };
 
     return await request(server)
@@ -158,7 +158,7 @@ describe('POST /account/applogin', () => {
       .form(payload)
       .expect('Content-Type', /json/)
       .expect('Cache-Control', 'no-store') // turn off caching
-      .expect(400)
+      .expect(403)
       .end((err, res) => {});
   });
 });

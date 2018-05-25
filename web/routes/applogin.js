@@ -20,12 +20,15 @@ const loginSchema = joi
 
 async function run(req, res, next) {
   const { appname, email, password } = joi.attempt(req.body, loginSchema);
+  debug(`App: ${appname}, Email: ${email}, Pass: ${password}`);
 
   const app = await getApp(appname);
   if (!app) {
+    debug('App not found');
     throw boom.badRequest(`Invalid app name: ${appname}.`);
   }
   if (app.isInactive()) {
+    debug('App is not active');
     throw boom.badRequest('App is not active.');
   }
 
@@ -36,6 +39,13 @@ async function run(req, res, next) {
   debug(`User ${user.get('email')} is authorised? ${isAuthorized}`);
   if (!isAuthorized) {
     throw boom.unauthorized('Invalid email or password.');
+  }
+
+  if (user.isInActive()) {
+    throw boom.forbidden('User account suspended');
+  }
+  if (user.isLocked()) {
+    throw boom.forbidden('User account locked');
   }
 
   const { result } = await isUserBelongsToApp(user, app.get('name'));
@@ -52,7 +62,7 @@ async function getApp(name) {
 
 async function authorize({ email, password }) {
   const user = await User.findOne(
-    { email, status: 'active' },
+    { email },
     { withRelated: ['apps', 'roles.permissions'] }
   );
 

@@ -9,6 +9,12 @@ const Base = require('../base');
 require('../app');
 require('../role');
 
+const Status = {
+  Active: 'active',
+  InActive: 'inactive',
+  Locked: 'locked',
+};
+
 const createSchema = joi
   .object({
     uid: joi.string().required(),
@@ -46,6 +52,18 @@ User = Base.Model.extend({
 
   roles: function() {
     return this.belongsToMany('Role');
+  },
+
+  isActive: function isActive() {
+    return this.get('status') === Status.Active;
+  },
+
+  isInActive: function isActive() {
+    return this.get('status') === Status.InActive;
+  },
+
+  isLocked: function isActive() {
+    return this.get('status') === Status.Locked;
   },
 
   toJson: function() {
