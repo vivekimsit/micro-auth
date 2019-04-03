@@ -5,9 +5,9 @@ Authentication microservice
 
 1. [Introduction](./docs/00_introduction.md)
 2. [Getting started](./docs/01_getting_started.md)
-3. [API documentation](./docs/02_api_docs.md)
-4. [Docker](./docs/03_docker.md)
-c
+3. [Development](./docs/02_development.md)
+4. [API documentation](./docs/03_api_docs.md)
+5. [Docker](./docs/04_docker.md)
 
 ## Related
 
