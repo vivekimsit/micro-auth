@@ -7,7 +7,7 @@ Authentication microservice
 2. [Getting started](./docs/01_getting_started.md)
 3. [API documentation](./docs/02_api_docs.md)
 4. [Docker](./docs/03_docker.md)
-
+c
 
 ## Related
 
